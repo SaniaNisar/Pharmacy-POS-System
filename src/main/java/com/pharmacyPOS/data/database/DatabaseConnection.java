@@ -10,7 +10,7 @@ public class DatabaseConnection {
     private static final String DATABASE_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/PharmacyPOS";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "Sania@1060+!";
+    private static final String PASSWORD = "1234";
 
     // Init connection object
     private Connection connection;
