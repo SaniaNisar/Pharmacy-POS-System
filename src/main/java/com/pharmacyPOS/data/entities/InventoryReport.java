@@ -14,7 +14,6 @@ public class InventoryReport {
         this.currentQuantity = currentQuantity;
         this.price = price;
     }
-
     public InventoryReport()
     {
     }
