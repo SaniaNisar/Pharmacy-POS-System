@@ -5,6 +5,7 @@ public class InventoryReport {
     private String productName; // Optional, could be included for readability
     private int currentQuantity;
     private double price; // Current price, if you want to track the value of inventory
+    private Inventory inventory;
 
     // Constructor with all fields
     public InventoryReport(int productId, String productName, int currentQuantity, double price) {
@@ -12,6 +13,10 @@ public class InventoryReport {
         this.productName = productName;
         this.currentQuantity = currentQuantity;
         this.price = price;
+    }
+
+    public InventoryReport()
+    {
     }
 
     // Getters and Setters
@@ -58,6 +63,12 @@ public class InventoryReport {
                 '}';
     }
 
-    // Optionally, implement equals() and hashCode() methods if necessary.
+    public void setQuantity(int quantity) {
+        this.currentQuantity=quantity;
+    }
+
+    public void setLowStockThreshold(int lowStockThreshold) {
+        this.inventory.setLowStockThreshold(lowStockThreshold);
+    }
 }
 
