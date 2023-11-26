@@ -1,5 +1,8 @@
 package com.pharmacyPOS.data.entities;
 
+import com.pharmacyPOS.data.dao.InventoryDao;
+import com.pharmacyPOS.service.ProductService;
+
 import java.sql.Date;
 
 public class Inventory {
@@ -7,7 +10,8 @@ public class Inventory {
     private int productId;
     private int quantity;
     //private double price; // If price is specific to inventory or varies with batch, etc.
-
+    private ProductService productService;
+    private InventoryDao inventoryDao;
     // Default constructor
     public Inventory() {
     }
@@ -76,11 +80,13 @@ public class Inventory {
         return lowStockThreshold;
     }
 
-    // ... other methods ...
-
     // Optionally, if you need to set this value:
     public void setLowStockThreshold(int threshold) {
         this.lowStockThreshold = threshold;
+    }
+
+    public Product getProductNameForInventoryItem() {
+        return productService.getProductById(productId);
     }
 
     // Optionally, implement equals() and hashCode() methods if necessary.
