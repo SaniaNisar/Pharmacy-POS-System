@@ -1,123 +1,49 @@
 package com.pharmacyPOS.presentation.controllers;
 
-import com.pharmacyPOS.data.dao.ProductDao;
 import com.pharmacyPOS.data.entities.Product;
+import com.pharmacyPOS.service.ProductService;
+
 import java.util.List;
 
 public class ProductController {
 
-    private ProductDao productDao;
+    private ProductService productService;
 
-    public ProductController(ProductDao productDao) {
-        this.productDao = productDao;
-    }
-
-    public Product getProductById(int productId) {
-        try {
-            return productDao.getProductById(productId);
-        } catch (Exception e) {
-            // Log error
-            e.printStackTrace();
-            return null;
-        }
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     public List<Product> getAllProducts() {
-        try {
-            return productDao.getAllProducts();
-        } catch (Exception e) {
-            // Log error
-            e.printStackTrace();
-            return null;
-        }
+        return productService.getAllProducts();
+    }
+    public List<Product> findProductsByName(String query)
+    {
+        return (productService.findProductsByName(query));
     }
 
-    public boolean addProduct(Product product) {
-        try {
-            productDao.createProduct(product);
-            return true;
-        } catch (Exception e) {
-            // Log error
-            e.printStackTrace();
-            return false;
-        }
+    public void deleteProduct(int productId) {
+        productService.deleteProduct(productId);
     }
 
-    public boolean updateProduct(Product product) {
-        try {
-            productDao.updateProduct(product);
-            return true;
-        } catch (Exception e) {
-            // Log error
-            e.printStackTrace();
-            return false;
-        }
+    public void updateProduct(Product product) {
+        productService.updateProduct(product);
     }
 
-    public boolean deleteProduct(int productId) {
-        try {
-            productDao.deleteProduct(productId);
-            return true;
-        } catch (Exception e) {
-            // Log error
-            e.printStackTrace();
-            return false;
-        }
+    public Product getProductById(int productId) {
+        return productService.getProductById(productId);
     }
 
-    /**
-     * Searches for products by name.
-     *
-     * @param name The name or partial name of the product.
-     * @return A list of products matching the search criteria.
-     */
-    public List<Product> searchProductsByName(String name) {
-        try {
-            return productDao.findProductsByName(name);
-        } catch (Exception e) {
-            // Log error
-            e.printStackTrace();
-            return null;
-        }
+    public Product getProductByName(String name) {
+        return productService.getProductByName(name);
     }
 
-    /**
-     * Updates the price of a product.
-     *
-     * @param productId The ID of the product.
-     * @param newPrice  The new price to set.
-     * @return true if the update was successful, false otherwise.
-     */
-    public boolean updateProductPrice(int productId, double newPrice) {
-        try {
-            Product product = productDao.getProductById(productId);
-            if (product != null) {
-                product.setPrice(newPrice);
-                productDao.updateProduct(product);
-                return true;
-            }
-            return false;
-        } catch (Exception e) {
-            // Log error
-            e.printStackTrace();
-            return false;
-        }
+    public void createProduct(Product product) {
+        productService.createProduct(product);
     }
 
-    /**
-     * Retrieves products by category.
-     *
-     * @param categoryId The ID of the category.
-     * @return A list of products in the specified category.
-     */
-    public List<Product> getProductsByCategory(int categoryId) {
-        try {
-            return productDao.findProductsByCategory(categoryId);
-        } catch (Exception e) {
-            // Log error
-            e.printStackTrace();
-            return null;
-        }
+    public List<Product> getProductsByCategory(String categoryName) {
+        return productService.getProductsByCategory(categoryName);
     }
 
+    // Additional methods for other operations can be added here...
 }

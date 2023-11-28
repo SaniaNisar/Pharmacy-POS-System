@@ -46,4 +46,9 @@ public class ProductService
     {
         return (productDao.getProductsByCategory(categoryName));
     }
+
+    public List<Product> findProductsByName(String query)
+    {
+        return (productDao.findProductsByName(query));
+    }
 }
