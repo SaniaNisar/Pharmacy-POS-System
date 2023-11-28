@@ -1,6 +1,7 @@
 package com.pharmacyPOS.presentation.controllers;
 
 import com.pharmacyPOS.data.dao.InventoryDao;
+import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.Inventory;
 import com.pharmacyPOS.service.InventoryService;
 import java.util.List;
@@ -13,6 +14,14 @@ public class InventoryController {
     public InventoryController(InventoryDao inventoryDao, InventoryService inventoryService) {
         this.inventoryDao = inventoryDao;
         this.inventoryService = inventoryService;
+    }
+
+    public InventoryController(InventoryService inventoryService)
+    {
+        this.inventoryService = inventoryService;
+        DatabaseConnection conn = new DatabaseConnection();
+        conn.connect();
+        this.inventoryDao = new InventoryDao(conn);
     }
 
     public List<Inventory> getInventoryList() {

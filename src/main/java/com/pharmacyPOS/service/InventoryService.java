@@ -1,9 +1,11 @@
 package com.pharmacyPOS.service;
 
 import com.pharmacyPOS.data.dao.InventoryDao;
+import com.pharmacyPOS.data.dao.ProductDao;
 import com.pharmacyPOS.data.entities.Inventory;
-import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.InventoryReport;
+import com.pharmacyPOS.data.entities.Product;
+import com.pharmacyPOS.data.database.DatabaseConnection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +13,23 @@ import java.util.List;
 public class InventoryService {
 
     private final InventoryDao inventoryDao;
+    private ProductService productService;
 
-    public InventoryService(DatabaseConnection databaseConnection) {
-        this.inventoryDao = new InventoryDao(databaseConnection);
+    public InventoryService(InventoryDao inventoryDao, ProductService productService) {
+        this.inventoryDao = inventoryDao;
+        this.productService = productService;
     }
 
-    public Inventory getInventoryByProductId(int productId) {
+    public InventoryService(InventoryDao inventoryDao)
+    {
+        DatabaseConnection c = new DatabaseConnection();
+        c.connect();
+        this.inventoryDao = inventoryDao;
+        this.productService = new ProductService(new ProductDao(c));
+    }
+
+    public Inventory getInventoryByProductId(int productId)
+    {
         return inventoryDao.getInventoryByProductId(productId);
     }
 
@@ -36,45 +49,47 @@ public class InventoryService {
         inventoryDao.deleteInventoryItem(inventoryId);
     }
 
-    /**
-     * Checks if the stock level of an inventory item is below its low stock threshold.
-     *
-     * @param item The inventory item to check.
-     * @return true if the stock is low, false otherwise.
-     */
     public boolean isStockLow(Inventory item) {
         if (item == null) {
             throw new IllegalArgumentException("Inventory item cannot be null");
         }
-
-        int currentStock = item.getQuantity();
-        int lowStockThreshold = item.getLowStockThreshold();
-
-        return currentStock <= lowStockThreshold;
+        return item.getQuantity() <= item.getLowStockThreshold();
     }
 
-        /**
-         * Generates a report of the current inventory.
-         *
-         * @return A list of inventory report data.
-         */
-        public List<InventoryReport> generateInventoryReport () {
-            List<Inventory> inventoryList = inventoryDao.getAllInventory();
-            List<InventoryReport> reportList = new ArrayList<>();
+    public List<Product> checkAndAlertLowStock() {
+        List<Inventory> allInventory = getAllInventory();
+        List<Product> lowStockProducts = new ArrayList<>();
 
-            for (Inventory item : inventoryList) {
-                InventoryReport report = new InventoryReport();
-                // Assuming InventoryReport has methods like setProductId, setProductName, setQuantity, etc.
-                report.setProductId(item.getProductId());
-                report.setProductName(String.valueOf(item.getProductNameForInventoryItem()));
-                report.setQuantity(item.getQuantity());
-                report.setLowStockThreshold(item.getLowStockThreshold());
-                // Add other necessary fields and calculations
-
-                reportList.add(report);
+        for (Inventory inventory : allInventory) {
+            //System.out.println(inventory.getQuantity() + " > " + inventory.getLowStockThreshold());
+            if (isStockLow(inventory)) {
+                Product product = productService.getProductById(inventory.getProductId());
+                lowStockProducts.add(product);
+                //System.out.println("Low Stock Alert: " + product.getName() + " (ID: " + product.getProductId() + ") - Quantity: " + inventory.getQuantity());
             }
-
-            return reportList;
         }
+
+        return lowStockProducts;
     }
 
+    public List<InventoryReport> generateInventoryReport() {
+        List<Inventory> inventoryList = getAllInventory();
+        List<InventoryReport> reportList = new ArrayList<>();
+
+        for (Inventory item : inventoryList)
+        {
+            InventoryReport report = new InventoryReport();
+            Product product = productService.getProductById(item.getProductId());
+            report.setProductId(item.getProductId());
+            report.setProductName(product.getName());
+            report.setQuantity(item.getQuantity());
+            report.setLowStockThreshold(item.getLowStockThreshold());
+            // Add other necessary fields and calculations
+            reportList.add(report);
+        }
+
+        return reportList;
+    }
+
+
+}

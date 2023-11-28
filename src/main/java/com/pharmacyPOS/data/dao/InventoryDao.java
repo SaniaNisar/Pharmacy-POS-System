@@ -26,7 +26,8 @@ public class InventoryDao {
                             rs.getInt("inventory_id"),
                             productId,
                             rs.getInt("quantity"),
-                            rs.getDate("expiry_date")
+                            rs.getDate("expiry_date"),
+                            rs.getInt("low_stock_threshold")
                     );
                 }
             }
@@ -48,7 +49,8 @@ public class InventoryDao {
                         rs.getInt("inventory_id"),
                         rs.getInt("product_id"),
                         rs.getInt("quantity"),
-                        rs.getDate("expiry_date")
+                        rs.getDate("expiry_date"),
+                        rs.getInt("low_stock_threshold")
                 ));
             }
         } catch (SQLException e) {

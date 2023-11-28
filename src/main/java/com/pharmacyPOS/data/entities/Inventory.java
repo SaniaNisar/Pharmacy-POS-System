@@ -17,12 +17,13 @@ public class Inventory {
     }
 
     // Parameterized constructor
-    public Inventory(int inventoryId, int productId, int quantity, Date expiryDate) {
+    public Inventory(int inventoryId, int productId, int quantity, Date expiryDate, int lowST) {
         this.inventoryId = inventoryId;
         this.productId = productId;
         this.quantity = quantity;
         //this.price = price;
         this.ExpiryDate=expiryDate;
+        this.lowStockThreshold=lowST;
     }
     private Date ExpiryDate;
 
