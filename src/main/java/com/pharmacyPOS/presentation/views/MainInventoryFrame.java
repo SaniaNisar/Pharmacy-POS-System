@@ -1,6 +1,8 @@
 package com.pharmacyPOS.presentation.views;
 
+import com.pharmacyPOS.data.dao.InventoryDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
+import com.pharmacyPOS.service.InventoryService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +17,7 @@ public class MainInventoryFrame extends JFrame {
         this.conn = c;
 
         setTitle("Inventory Management");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(300, 250);
         setLocationRelativeTo(null);
 
@@ -35,7 +37,7 @@ public class MainInventoryFrame extends JFrame {
         viewAlertsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code to handle View Alerts
+                new LowStockAlertFrame(new InventoryService(new InventoryDao(conn)));
             }
         });
 

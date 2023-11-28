@@ -1,7 +1,9 @@
 package com.pharmacyPOS.presentation.views;
 
+import com.pharmacyPOS.data.dao.InventoryDao;
 import com.pharmacyPOS.data.dao.ProductDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
+import com.pharmacyPOS.service.InventoryService;
 import com.pharmacyPOS.service.ProductService;
 
 import javax.swing.*;
@@ -55,7 +57,7 @@ public class ManagerDashboard extends JFrame {
         viewAlertsItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code to handle viewing alerts
+                new LowStockAlertFrame(new InventoryService(new InventoryDao(conn)));
             }
         });
         inventoryMenu.add(viewAlertsItem);
@@ -140,6 +142,13 @@ public class ManagerDashboard extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 MainInventoryFrame mainInventoryFrame = new MainInventoryFrame(conn);
                 mainInventoryFrame.setVisible(true);
+            }
+        });
+
+        reports.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new MainReportsPage(conn);
             }
         });
 

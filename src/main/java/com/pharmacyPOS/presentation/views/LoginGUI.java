@@ -1,7 +1,10 @@
 package com.pharmacyPOS.presentation.views;
 
+import com.pharmacyPOS.data.dao.UserDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.presentation.controllers.LoginController;
+import com.pharmacyPOS.presentation.controllers.UserController;
+import com.pharmacyPOS.service.UserService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +25,7 @@ public class LoginGUI {
         // Creating the frame
         JFrame frame = new JFrame("Pharmacy POS Login");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 200);
+        frame.setSize(300, 200);
 
         // Creating the panel at the bottom and adding components
         JPanel panel = new JPanel();
@@ -57,6 +60,7 @@ public class LoginGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String user = userText.getText();
+                //String usernameforid=userText.getText();
                 String password = new String(passwordText.getPassword());
                 String role = managerButton.isSelected() ? "Manager" : "Sales Assistant";
 
@@ -75,7 +79,12 @@ public class LoginGUI {
                         });
                     } else if (role.equals("Sales Assistant"))
                     {
-                        System.out.println("Sales assistant login successful!!!!!!!!!!");
+                        SwingUtilities.invokeLater(() -> {
+
+                            UserController userController = new UserController(new UserService(new UserDao(conn)));
+                            int id = userController.getUserIdByUsername(user);
+                            new SalesAssistantDashboard(conn, id);
+                        });
                     }
                 } else {
                     // Invalid user, display an error message or take appropriate action
