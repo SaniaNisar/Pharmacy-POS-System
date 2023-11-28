@@ -13,7 +13,8 @@ public class MainInventoryFrame extends JFrame {
 
     private DatabaseConnection conn;
 
-    public MainInventoryFrame(DatabaseConnection c) {
+    public MainInventoryFrame(DatabaseConnection c)
+    {
         this.conn = c;
 
         setTitle("Inventory Management");
@@ -45,7 +46,7 @@ public class MainInventoryFrame extends JFrame {
         manageInventoryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code to open Manage Inventory
+                new InventoryManagementPage(conn);
             }
         });
 

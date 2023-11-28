@@ -45,4 +45,9 @@ public class UserService {
     {
         return (userDao.getUserIdByUsername(username));
     }
+
+    public int createUserReturnKey(User user)
+    {
+       return (userDao.createUserReturnKey(user));
+    }
 }

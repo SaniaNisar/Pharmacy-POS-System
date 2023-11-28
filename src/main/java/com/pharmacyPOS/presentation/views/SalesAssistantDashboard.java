@@ -70,11 +70,14 @@ public class SalesAssistantDashboard extends JFrame {
 
         // Add menu "Logout"
         JMenu logoutMenu = new JMenu("Logout");
-        JMenuItem logoutItem = new JMenuItem("Logout");
+        JMenuItem logoutItem = new JMenuItem("Logout Sales Assistant");
         logoutItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code to handle logout
+                setVisible(false);
+                //setDefaultCloseOperation(EXIT_ON_CLOSE);
+                JOptionPane.showMessageDialog(null,"You have been logged out successfully!");
+                new LoginGUI(conn);
             }
         });
         logoutMenu.add(logoutItem);

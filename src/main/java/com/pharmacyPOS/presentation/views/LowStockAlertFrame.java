@@ -52,10 +52,19 @@ public class LowStockAlertFrame extends JFrame {
         mainPanel.removeAll();
 
         List<Product> lowStockProducts = inventoryService.checkAndAlertLowStock();
-        if (lowStockProducts.isEmpty()) {
+        /*for(Product p : lowStockProducts)
+        {
+            System.out.println(p.);
+        }
+         */
+        if (lowStockProducts.isEmpty())
+        {
             mainPanel.add(new JLabel("No low stock items found."));
-        } else {
-            for (Product product : lowStockProducts) {
+        }
+        else
+        {
+            for (Product product : lowStockProducts)
+            {
                 JPanel productPanel = new JPanel();
                 productPanel.add(new JLabel(product.getName() + " (ID: " + product.getProductId() + ") - Low Stock"));
                 JButton reorderButton = new JButton("Reorder");

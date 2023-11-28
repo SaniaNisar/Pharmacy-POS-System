@@ -38,6 +38,11 @@ public class UserController {
         userService.deleteUser(id);
     }
 
+    public int createUserReturnKey(User user)
+    {
+        return (userService.createUserReturnKey(user));
+    }
+
     public User verifyLogin( String username, String password) {
         return userService.verifyLogin(username, password);
     }

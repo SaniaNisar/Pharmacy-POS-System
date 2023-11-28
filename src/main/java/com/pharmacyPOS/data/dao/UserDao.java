@@ -104,6 +104,32 @@ public class UserDao {
         }
     }
 
+    public int createUserReturnKey(User user) {
+        String sql = "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)";
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getPasswordHash());
+            pstmt.setString(3, user.getRole());
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        int generatedUserId = rs.getInt(1);
+                        user.setUserId(generatedUserId);
+                        return generatedUserId;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Return -1 or any other value to indicate failure
+    }
+
+
     public void updateUser(User user) {
         String sql = "UPDATE users SET username = ?, password_hash = ?, role = ? WHERE user_id = ?";
         try (Connection conn = databaseConnection.connect();

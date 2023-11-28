@@ -17,7 +17,7 @@ public class MainProductPage extends JFrame {
         conn=c;
         // Set the frame properties
         setTitle("Catalog Management");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(300, 200);
         setLocationRelativeTo(null);
 
@@ -43,13 +43,23 @@ public class MainProductPage extends JFrame {
             }
         });
 
+        JButton categoriesButton = createButton("Manage Categories");
+
+        categoriesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new ManageCategoriesPage(conn);
+            }
+        });
+
         // Create a panel for the buttons
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(2, 1, 10, 10)); // 2 rows, 1 column, with 10-pixel gaps
+        buttonPanel.setLayout(new GridLayout(3, 1, 10, 10)); // 2 rows, 1 column, with 10-pixel gaps
 
         // Add buttons to the panel
         buttonPanel.add(editButton);
         buttonPanel.add(organizeButton);
+        buttonPanel.add(categoriesButton);
 
         // Set layout manager for the main frame
         setLayout(new BorderLayout());

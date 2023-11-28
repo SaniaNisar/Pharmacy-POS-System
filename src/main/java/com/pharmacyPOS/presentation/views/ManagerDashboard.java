@@ -47,10 +47,27 @@ public class ManagerDashboard extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-
+                new InventoryManagementPage(conn);
             }
         });
         inventoryMenu.add(manageInventoryItem);
+
+        JMenu logoutMenu = new JMenu("Logout");
+        JMenuItem logout = new JMenuItem("Logout Manager");
+        logout.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                setVisible(false);
+                //setDefaultCloseOperation(EXIT_ON_CLOSE);
+                JOptionPane.showMessageDialog(null,"You have been logged out successfully!");
+
+                new LoginGUI(conn);
+                //setDefaultCloseOperation(EXIT_ON_CLOSE);
+            }
+        });
+        logoutMenu.add(logout);
+
 
         // Menu item "View Alerts"
         JMenuItem viewAlertsItem = new JMenuItem("View Alerts");
@@ -75,7 +92,7 @@ public class ManagerDashboard extends JFrame {
 
 
         // Add menu "Catalog"
-        JMenu productCatalog = new JMenu("Products");
+        JMenu productCatalog = new JMenu("Catalog");
         JMenuItem editProducts = new JMenuItem("Edit Products");
         editProducts.addActionListener(new ActionListener() {
             @Override
@@ -94,6 +111,16 @@ public class ManagerDashboard extends JFrame {
             }
         });
         productCatalog.add(organizeProducts);
+
+        JMenuItem manageCategories = new JMenuItem("Manage Categories");
+        manageCategories.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new ManageCategoriesPage(conn);
+            }
+        });
+        productCatalog.add(manageCategories);
+
 
         // Add menu "Reports"
         JMenu reportsMenu = new JMenu("Reports");
@@ -118,6 +145,7 @@ public class ManagerDashboard extends JFrame {
         menuBar.add(inventoryMenu);
         menuBar.add(productCatalog);
         menuBar.add(reportsMenu);
+        menuBar.add(logoutMenu);
 
         // Create a welcome label
         JLabel welcomeLabel = new JLabel("Welcome, Manager", SwingConstants.CENTER);

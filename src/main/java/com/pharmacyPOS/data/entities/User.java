@@ -39,13 +39,14 @@ public class User {
         return passwordHash;
     }
 
-    public void setPasswordHash(String passwordHash) {
+    /*public void setPasswordHash(String passwordHash) {
         if (passwordHash != null && passwordHash.length() <= 13) {
             this.passwordHash = passwordHash;
         } else {
             throw new IllegalArgumentException("Password hash length must be 13 characters or less.");
         }
     }
+     */
 
     public String getRole() {
         return role;
@@ -65,6 +66,11 @@ public class User {
                 ", role='" + role + '\'' +
                 '}';
     }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
 
     // Optionally, you can override equals() and hashCode() methods as well.
 }

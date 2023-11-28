@@ -1,4 +1,5 @@
 package com.pharmacyPOS.presentation.views;
+import com.pharmacyPOS.data.dao.UserDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.presentation.views.LoginGUI;
 
@@ -17,24 +18,33 @@ public class WelcomePage extends JFrame {
 
         // Set the frame properties
         setTitle("POS System");
-        setSize(400, 300);
+        setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Set the background color to sky blue
         getContentPane().setBackground(new Color(135, 206, 250)); // Sky blue
+        //getContentPane().setBackground(new Color(0,0,139));
 
         // Create components
         JLabel welcomeLabel = new JLabel("Welcome to the POS System");
-        welcomeLabel.setForeground(new Color(0, 0, 139)); // Dark blue
-        welcomeLabel.setFont(new Font("Times New Roman", Font.BOLD, 20));
+        welcomeLabel.setForeground(new Color(0,0,139)); // Dark blue
+        //welcomeLabel.setForeground(Color.white);
+        welcomeLabel.setFont(new Font("Times New Roman", Font.BOLD, 35));
         welcomeLabel.setBorder(new EmptyBorder(10, 10, 10, 10)); // Adding padding
 
         JButton loginButton = new JButton("Login");
+        JButton signUpButton = new JButton("Sign Up");
+
+        signUpButton.setBackground(new Color(0, 0, 139));
+        signUpButton.setForeground(Color.WHITE);
+        signUpButton.setFocusPainted(false); // Remove the focus border
+        signUpButton.setPreferredSize(new Dimension(240, 30));
+
         loginButton.setBackground(new Color(0, 0, 139)); // Dark blue
         loginButton.setForeground(Color.WHITE);
         loginButton.setFocusPainted(false); // Remove the focus border
-        loginButton.setPreferredSize(new Dimension(100, 30)); // Decreased width, increased height
+        loginButton.setPreferredSize(new Dimension(240, 30)); // Decreased width, increased height
 
         // Center-align text
         welcomeLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -48,12 +58,23 @@ public class WelcomePage extends JFrame {
             }
         });
 
+        signUpButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new SignUpPage(new UserDao(conn));
+            }
+        });
+
         // Set layout manager
         setLayout(new BorderLayout());
 
         // Add components to the frame
+        JPanel buttons = new JPanel();
+        buttons.add(signUpButton);
+        buttons.add(loginButton);
         add(welcomeLabel, BorderLayout.CENTER);
-        add(loginButton, BorderLayout.SOUTH);
+       // add(signUpButton, BorderLayout.CENTER);
+        add(buttons, BorderLayout.SOUTH);
         setVisible(true);
     }
 

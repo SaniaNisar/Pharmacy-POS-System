@@ -16,7 +16,7 @@ public class MainReportsPage extends JFrame {
 
         // Set the frame properties
         setTitle("Reports");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(300, 200);
         setLocationRelativeTo(null);
 
