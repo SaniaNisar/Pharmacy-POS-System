@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import com.pharmacyPOS.data.dao.InventoryDao;
 import com.pharmacyPOS.data.dao.ProductDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.Product;
@@ -62,7 +63,7 @@ public class ProductManagementFrame {
                 // Open the AddProductFrame with the table model
                 DatabaseConnection conn = new DatabaseConnection();
                 conn.connect();
-                new AddProductFrame(tableModel, productService, new InventoryService(conn));
+                new AddProductFrame(tableModel, productService, new InventoryService(new InventoryDao(conn)));
                 updateProductTable();
             }
         });

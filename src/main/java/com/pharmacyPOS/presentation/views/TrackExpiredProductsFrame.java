@@ -1,5 +1,6 @@
 package com.pharmacyPOS.presentation.views;
 
+import com.pharmacyPOS.data.dao.InventoryDao;
 import com.pharmacyPOS.data.dao.ProductDao;
 import com.pharmacyPOS.service.ProductService;
 import com.pharmacyPOS.service.InventoryService;
@@ -31,7 +32,7 @@ public class TrackExpiredProductsFrame extends JFrame {
     public TrackExpiredProductsFrame(DatabaseConnection connection) {
         this.connection = connection;
         productService = new ProductService(new ProductDao(connection));
-        inventoryService = new InventoryService(connection);
+        inventoryService = new InventoryService(new InventoryDao(connection));
 
         setTitle("Expired Products Tracker");
         setSize(800, 600);

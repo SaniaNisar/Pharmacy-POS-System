@@ -17,52 +17,42 @@ public class AddProductFrame extends JFrame {
     private JTextField categoryIdTextField;
     private JTextField expirationDateTextField;
     private JTextField quantityTextField;
+    private JTextField lowStockThresholdTextField; // New field for low stock threshold
+
 
     public AddProductFrame(DefaultTableModel tableModel, ProductService productService, InventoryService inventoryService) {
         setTitle("Add Product");
-        setSize(400, 350);
+        setSize(500, 400); // Adjust size as needed
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Initialize components
+        // Main panel with BoxLayout for vertical stacking
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(7, 2));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JLabel nameLabel = new JLabel("Name:");
-        nameTextField = new JTextField();
+        // Initialize all text fields
+        nameTextField = new JTextField(20);
+        descriptionTextField = new JTextField(20);
+        priceTextField = new JTextField(20);
+        categoryIdTextField = new JTextField(20);
+        expirationDateTextField = new JTextField(20);
+        quantityTextField = new JTextField(20);
+        lowStockThresholdTextField = new JTextField(20);
 
-        JLabel descriptionLabel = new JLabel("Description:");
-        descriptionTextField = new JTextField();
+        // Add label-text field pairs to the panel
+        panel.add(createRow("Name:", nameTextField));
+        panel.add(createRow("Description:", descriptionTextField));
+        panel.add(createRow("Price:", priceTextField));
+        panel.add(createRow("Category ID:", categoryIdTextField));
+        panel.add(createRow("Expiration Date:", expirationDateTextField));
+        panel.add(createRow("Quantity:", quantityTextField));
+        panel.add(createRow("Low Stock Threshold:", lowStockThresholdTextField));
 
-        JLabel priceLabel = new JLabel("Price:");
-        priceTextField = new JTextField();
-
-        JLabel categoryIdLabel = new JLabel("Category ID:");
-        categoryIdTextField = new JTextField();
-
-        JLabel expirationDateLabel = new JLabel("Expiration Date:");
-        expirationDateTextField = new JTextField();
-
-        JLabel quantityLabel = new JLabel("Quantity:");
-        quantityTextField = new JTextField();
-
+        // Add button with its own FlowLayout panel
         JButton addButton = new JButton("Add");
-
-        // Add components to the panel
-        panel.add(nameLabel);
-        panel.add(nameTextField);
-        panel.add(descriptionLabel);
-        panel.add(descriptionTextField);
-        panel.add(priceLabel);
-        panel.add(priceTextField);
-        panel.add(categoryIdLabel);
-        panel.add(categoryIdTextField);
-        panel.add(expirationDateLabel);
-        panel.add(expirationDateTextField);
-        panel.add(quantityLabel);
-        panel.add(quantityTextField);
-        panel.add(new JLabel()); // Placeholder for layout adjustment
-        panel.add(addButton);
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(addButton);
+        panel.add(buttonPanel);
 
         // Add action listener to the "Add" button
         addButton.addActionListener(e -> {
@@ -82,11 +72,13 @@ public class AddProductFrame extends JFrame {
                 // Assuming the productDao returns the generated product_id,
                 // we can use it to create a new Inventory record.
                 int quantity = Integer.parseInt(quantityTextField.getText());
+                int lowStockThreshold = Integer.parseInt(lowStockThresholdTextField.getText());
                 Inventory newInventory = new Inventory(
-                        0, // Inventory ID will be auto-generated
+                        0, // Assuming inventoryId is auto-generated
                         newProduct.getProductId(),
-                        quantity,
-                        java.sql.Date.valueOf(expirationDateTextField.getText())
+                        Integer.parseInt(quantityTextField.getText()),
+                        java.sql.Date.valueOf(expirationDateTextField.getText()),
+                        lowStockThreshold // New field value
                 );
 
                 // Call the createInventoryItem method to add the new inventory record to the database
@@ -125,5 +117,13 @@ public class AddProductFrame extends JFrame {
         // Add the panel to the frame
         add(panel);
         setVisible(true);
+    }
+
+    private JPanel createRow(String labelText, JTextField textField) {
+        JPanel row = new JPanel();
+        row.setLayout(new FlowLayout(FlowLayout.LEFT));
+        row.add(new JLabel(labelText));
+        row.add(textField);
+        return row;
     }
 }
