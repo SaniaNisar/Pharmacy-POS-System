@@ -20,6 +20,9 @@ public class OrderDetail {
         this.unitPrice = unitPrice;
     }
 
+    public OrderDetail(int cartId, int productId, int quantity, double price) {
+    }
+
     // Getters and setters
     public int getOrderDetailId() {
         return orderDetailId;
@@ -72,7 +75,5 @@ public class OrderDetail {
                 ", unitPrice=" + unitPrice +
                 '}';
     }
-
-    // Optionally, implement equals() and hashCode() methods if necessary.
 }
 
