@@ -12,6 +12,10 @@ public class SaleItem {
         this.price = price;
     }
 
+    public SaleItem() {
+
+    }
+
     // Getters and setters
     public int getProductId() {
         return productId;
