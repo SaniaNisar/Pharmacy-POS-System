@@ -1,5 +1,5 @@
 package com.pharmacyPOS.data.entities;
-public class SalesReport {
+public class SalesReport extends Report {
     private int productId;
     private String productName;
     private int totalQuantitySold;
@@ -63,6 +63,12 @@ public class SalesReport {
                 ", totalQuantitySold=" + totalQuantitySold +
                 ", totalSalesAmount=" + totalSalesAmount +
                 '}';
+    }
+
+    @Override
+    public void display() {
+        // Implement the logic to display sales report details
+        System.out.println(this.toString());
     }
 
     // Optionally, implement equals() and hashCode() methods if necessary.

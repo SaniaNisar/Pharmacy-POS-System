@@ -108,5 +108,21 @@ public class InventoryDao {
         }
     }
 
+    public String getProductNameById(int productId) {
+        String sql = "SELECT name FROM products WHERE product_id = ?";
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, productId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("name");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "Unknown Product"; // Return a default value if not found
+    }
 }
 

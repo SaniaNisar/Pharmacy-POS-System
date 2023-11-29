@@ -3,6 +3,9 @@ package com.pharmacyPOS.presentation.views;
 import com.pharmacyPOS.data.dao.InventoryDao;
 import com.pharmacyPOS.data.dao.ProductDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
+import com.pharmacyPOS.data.entities.InventoryChartFrame;
+import com.pharmacyPOS.data.entities.InventoryReportGenerator;
+import com.pharmacyPOS.presentation.controllers.InventoryController;
 import com.pharmacyPOS.service.InventoryService;
 import com.pharmacyPOS.service.ProductService;
 
@@ -135,7 +138,10 @@ public class ManagerDashboard extends JFrame {
         inventoryReportItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code to generate inventory report
+                InventoryReportGenerator reportGenerator = new InventoryReportGenerator(conn);
+                reportGenerator.generateAndWriteReportToFile();
+                JOptionPane.showMessageDialog(null,"Report exported to txt file!");
+                new InventoryChartFrame(new InventoryController(new InventoryService(new InventoryDao(conn)))).setVisible(true);
             }
         });
         reportsMenu.add(salesReportItem);

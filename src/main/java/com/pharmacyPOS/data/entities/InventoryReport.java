@@ -1,6 +1,13 @@
 package com.pharmacyPOS.data.entities;
 
-public class InventoryReport {
+import com.pharmacyPOS.data.dao.InventoryDao;
+import com.pharmacyPOS.data.dao.ProductDao;
+import com.pharmacyPOS.data.database.DatabaseConnection;
+import com.pharmacyPOS.service.ProductService;
+
+import java.util.List;
+
+public class InventoryReport extends Report {
     private int productId;
     private String productName; // Optional, could be included for readability
     private int currentQuantity;
@@ -14,8 +21,8 @@ public class InventoryReport {
         this.currentQuantity = currentQuantity;
         this.price = price;
     }
-    public InventoryReport()
-    {
+
+    public InventoryReport() {
     }
 
     // Getters and Setters
@@ -62,12 +69,19 @@ public class InventoryReport {
                 '}';
     }
 
+    @Override
+    public void display() {
+        System.out.println(this.toString());
+    }
+
+
     public void setQuantity(int quantity) {
-        this.currentQuantity=quantity;
+        this.currentQuantity = quantity;
     }
 
     public void setLowStockThreshold(int lowStockThreshold) {
         this.inventory.setLowStockThreshold(lowStockThreshold);
     }
+
 }
 

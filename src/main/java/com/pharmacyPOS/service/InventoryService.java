@@ -91,5 +91,10 @@ public class InventoryService {
         return reportList;
     }
 
+    public String getProductNameById(int productId)
+    {
+        return (inventoryDao.getProductNameById(productId));
+    }
+
 
 }

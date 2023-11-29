@@ -98,5 +98,9 @@ public class InventoryController {
         // You would insert more robust notification logic here.
     }
 
-    // Other methods related to inventory management can be added here...
+    public String getProductNameById(int productId)
+    {
+        return (inventoryService.getProductNameById(productId));
+    }
+
 }

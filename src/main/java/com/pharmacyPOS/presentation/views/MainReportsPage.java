@@ -1,6 +1,11 @@
 package com.pharmacyPOS.presentation.views;
 
+import com.pharmacyPOS.data.dao.InventoryDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
+import com.pharmacyPOS.data.entities.InventoryChartFrame;
+import com.pharmacyPOS.data.entities.InventoryReportGenerator;
+import com.pharmacyPOS.presentation.controllers.InventoryController;
+import com.pharmacyPOS.service.InventoryService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,7 +41,11 @@ public class MainReportsPage extends JFrame {
         inventoryReportButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code to generate and display inventory report
+                InventoryReportGenerator reportGenerator = new InventoryReportGenerator(conn);
+                reportGenerator.generateAndWriteReportToFile();
+                JOptionPane.showMessageDialog(null,"Report exported to txt file!");
+
+                new InventoryChartFrame(new InventoryController(new InventoryService(new InventoryDao(conn)))).setVisible(true);
             }
         });
 
