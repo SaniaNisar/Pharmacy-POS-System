@@ -205,8 +205,8 @@ public class ManageCartFrame extends JFrame {
     private void onProcessOrderClicked(ActionEvent actionEvent){
         try {
             Cart currentCart = cartController.getCurrentCart(userId);
-            if (currentCart == null)
-            {
+//            if (currentCart == null)
+//            {
                 // Calculate the total amount (replace with actual calculation logic)
                 double totalAmount = calculateTotalAmount();
 
@@ -250,11 +250,11 @@ public class ManageCartFrame extends JFrame {
                 // Center the payment frame on the screen
                 paymentFrame.setLocationRelativeTo(null);
                 paymentFrame.setVisible(true);
-            }
-            else
-            {
+//            }
+//            else
+//            {
                 JOptionPane.showMessageDialog(this, "Nothing In Cart to Process", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+//            }
         }
         catch (SQLException ex) {
             ex.printStackTrace();
