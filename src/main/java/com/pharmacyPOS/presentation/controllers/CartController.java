@@ -54,6 +54,18 @@ public class CartController {
     public List<CartItem> getCartItems(int cartId) throws SQLException {
         return (cartService.getCartItems(cartId));
     }
-
-
+    public double getCartTotal(int userId) {
+        try {
+            Cart cart = getCurrentCart(userId); // Assuming you have a method to get the current Cart
+            if (cart != null) {
+                return cart.getTotal();
+            } else {
+                return 0.0;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            // Handle exceptions as needed
+        }
+        return 0.0;
+    }
 }
