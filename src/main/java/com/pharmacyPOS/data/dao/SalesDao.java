@@ -1,5 +1,7 @@
 package com.pharmacyPOS.data.dao;
 
+import com.pharmacyPOS.data.entities.Inventory;
+import com.pharmacyPOS.data.entities.Product;
 import com.pharmacyPOS.data.entities.Sale;
 import com.pharmacyPOS.data.entities.SaleItem;
 import com.pharmacyPOS.data.database.DatabaseConnection;
@@ -135,5 +137,79 @@ public class SalesDao {
             e.printStackTrace();
         }
         return saleDate;
+    }
+
+    public List<Sale> getAllSales() {
+        List<Sale> sales = new ArrayList<>();
+        try {
+            Statement statement = databaseConnection.connect().createStatement();
+            String sql = "SELECT * FROM sales"; // Replace with your actual sales table name
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                int saleId = resultSet.getInt("sale_id");
+                Date saleDate = resultSet.getDate("sale_date");
+
+                List<SaleItem> saleItems = getSaleItems(saleId); // Method to fetch sale items for this sale
+                double totalCost = calculateTotalCost(saleItems); // Calculate total cost based on the items
+
+                Sale sale = new Sale();
+                sale.setSaleId(saleId);
+                sale.setItems(saleItems);
+                sale.setTotalCost(totalCost);
+                sale.setSaleDate(saleDate);
+
+                sales.add(sale);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sales;
+    }
+
+    private double calculateTotalCost(List<SaleItem> items) {
+        double total = 0.0;
+        for (SaleItem item : items) {
+            total += item.getPrice() * item.getQuantity(); // Assuming SaleItem has getPrice and getQuantity methods
+        }
+        return total;
+    }
+    private List<SaleItem> getSaleItems(int saleId) {
+        List<SaleItem> saleItems = new ArrayList<>();
+        String query = "SELECT * FROM sale_items WHERE sale_id = ?";
+        try (PreparedStatement ps = databaseConnection.connect().prepareStatement(query)) {
+            ps.setInt(1, saleId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                SaleItem item = new SaleItem();
+                item.setProductId(rs.getInt("product_id"));
+                item.setQuantity(rs.getInt("quantity"));
+                item.setPrice(rs.getDouble("price"));
+                // Add other fields as necessary
+                saleItems.add(item);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return saleItems;
+    }
+
+    public List<Product> getAllInventory() {
+        List<Product> inventory = new ArrayList<>();
+        String query = "SELECT * FROM products"; // Replace 'products' with your actual inventory table name
+        try (Statement statement = databaseConnection.connect().createStatement()) {
+            ResultSet rs = statement.executeQuery(query);
+            while (rs.next()) {
+                Product product = new Product();
+                product.setProductId(rs.getInt("product_id"));
+                product.setName(rs.getString("name"));
+                product.setPrice(rs.getDouble("price"));
+                // Set other fields as necessary
+                inventory.add(product);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return inventory;
     }
 }
