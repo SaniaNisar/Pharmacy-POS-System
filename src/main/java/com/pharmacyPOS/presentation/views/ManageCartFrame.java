@@ -319,7 +319,7 @@ public class ManageCartFrame extends JFrame {
 
                     JOptionPane.showMessageDialog(paymentFrame, "Payment successful! Change: " + (amountPaid - totalAmount), "Payment", JOptionPane.INFORMATION_MESSAGE);
                     // invoice generation logic willl be added here
-
+                    new POSReceipt(order, amountPaid, "Sania");
                     JOptionPane.showMessageDialog(this, "Invoice generated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                     paymentFrame.dispose(); // Close the payment frame
 
