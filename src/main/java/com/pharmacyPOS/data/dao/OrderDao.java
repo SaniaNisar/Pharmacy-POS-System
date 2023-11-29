@@ -1,6 +1,8 @@
 package com.pharmacyPOS.data.dao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.Order;
+import com.pharmacyPOS.data.entities.OrderDetail;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,5 +102,23 @@ public class OrderDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void saveOrderDetail(OrderDetail detail) throws SQLException {
+        String sql = "INSERT INTO order_details (order_id, product_id, quantity_ordered, price_at_time_of_sale) VALUES (?, ?, ?, ?)";
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, detail.getOrderId());
+            pstmt.setInt(2, detail.getProductId());
+            pstmt.setInt(3, detail.getQuantity());
+            pstmt.setDouble(4, detail.getUnitPrice());
+            pstmt.executeUpdate();
+        }
+    }
+
+
+    public void saveOrder(Order order) {
+
     }
 }
