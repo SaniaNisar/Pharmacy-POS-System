@@ -1,11 +1,15 @@
 package com.pharmacyPOS.data.entities;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Order {
     private int orderId;
     private int userId;
     private Date timestamp;
+    private OrderDetail[] orderDetails; // Array of OrderDetail objects
 
     // Default constructor
     public Order() {
@@ -17,6 +21,7 @@ public class Order {
         this.userId = userId;
         this.timestamp = timestamp;
     }
+
 
     // Getters and setters
     public int getOrderId() {
@@ -51,6 +56,14 @@ public class Order {
                 ", userId=" + userId +
                 ", timestamp=" + timestamp +
                 '}';
+    }
+
+    public OrderDetail[] getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(OrderDetail[] orderDetails) {
+        this.orderDetails = orderDetails;
     }
 
     // Implement equals and hashCode if necessary.
