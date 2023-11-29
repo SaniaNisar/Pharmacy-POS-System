@@ -168,4 +168,20 @@ public class CartDao {
             }
         }
     }
+    // ... other methods ...
+
+    /**
+     * Removes all items from the specified cart.
+     * @param cartId The ID of the cart to be cleared.
+     * @throws SQLException If a database access error occurs.
+     */
+    public void clearCartItems(int cartId) throws SQLException {
+        String sql = "DELETE FROM cart_items WHERE cart_id = ?";
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, cartId);
+            pstmt.executeUpdate();
+        }
+    }
 }
