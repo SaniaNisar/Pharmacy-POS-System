@@ -54,4 +54,5 @@ public class CartService {
     public List<CartItem> getCartItems(int cartId) throws SQLException {
         return (cartDao.getCartItems(cartId));
     }
+
 }
