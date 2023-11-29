@@ -1,6 +1,8 @@
 package com.pharmacyPOS.presentation.controllers;
 
+import com.pharmacyPOS.data.dao.InventoryDao;
 import com.pharmacyPOS.data.entities.CartItem;
+import com.pharmacyPOS.data.entities.Inventory;
 import com.pharmacyPOS.service.CartService;
 import com.pharmacyPOS.data.entities.Cart;
 import com.pharmacyPOS.data.entities.SaleItem;
@@ -67,5 +69,20 @@ public class CartController {
             // Handle exceptions as needed
         }
         return 0.0;
+    }
+    private InventoryDao inventoryDao;
+    public void decrementInventory(int productId, int quantity) throws SQLException {
+        // Retrieve current inventory for the product
+        Inventory inventory = inventoryDao.getInventoryByProductId(productId);
+        if (inventory != null && inventory.getQuantity() >= quantity) {
+            inventory.setQuantity(inventory.getQuantity() - quantity);
+            inventoryDao.updateInventoryItem(inventory);
+        } else {
+            throw new SQLException("Insufficient inventory for product ID: " + productId);
+        }
+    }
+
+    public void clearCart(int cartId) {
+       cartService.clearCart(cartId);
     }
 }
