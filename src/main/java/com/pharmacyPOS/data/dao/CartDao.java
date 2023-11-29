@@ -179,7 +179,6 @@ public class CartDao {
         String sql = "DELETE FROM cart_items WHERE cart_id = ?";
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
             pstmt.setInt(1, cartId);
             pstmt.executeUpdate();
         }
