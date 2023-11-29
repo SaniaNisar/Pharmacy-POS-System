@@ -75,6 +75,10 @@ CREATE TABLE IF NOT EXISTS cart_items (
     FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
     );
 
+INSERT INTO users (username, password_hash, role) VALUES
+                                                      ('manager1', 'managerpassword1', 'Manager'),
+                                                      ('sales1', 'salespassword1', 'Sales Assistant');
+
 ALTER TABLE products
 DROP FOREIGN KEY products_ibfk_1;
 

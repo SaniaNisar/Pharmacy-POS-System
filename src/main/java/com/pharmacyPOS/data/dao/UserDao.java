@@ -168,7 +168,7 @@ public class UserDao {
     }
     public User verifyLogin(String username, String password) {
         User user = null;
-        String sql = "SELECT * FROM Users WHERE username = ? AND password = SHA2(?, 256)";
+        String sql = "SELECT * FROM Users WHERE username = ? AND password = ?";
 
         try (Connection conn = databaseConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {

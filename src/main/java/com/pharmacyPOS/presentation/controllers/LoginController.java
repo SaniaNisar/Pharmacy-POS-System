@@ -17,7 +17,7 @@ public class LoginController
     public boolean validateUser(String username, String password, String role)
     {
         // Implement the logic to validate the user from the database
-        String sql = "SELECT * FROM users WHERE username = ? AND password_hash = SHA2(?, 256) AND role = ?";
+        String sql = "SELECT * FROM users WHERE username = ? AND password_hash = ? AND role = ?";
 
         try (Connection connection = conn.connect();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
