@@ -70,7 +70,4 @@ public class SalesReport extends Report {
         // Implement the logic to display sales report details
         System.out.println(this.toString());
     }
-
-    // Optionally, implement equals() and hashCode() methods if necessary.
-    // These would be based on the productId, or a combination of fields that uniquely identify a sales report entry.
 }
