@@ -2,6 +2,7 @@ package com.pharmacyPOS.service;
 
 import com.pharmacyPOS.data.dao.SalesDao;
 import com.pharmacyPOS.data.dao.InventoryDao;
+import com.pharmacyPOS.data.entities.Product;
 import com.pharmacyPOS.data.entities.Sale;
 import com.pharmacyPOS.data.entities.SaleItem;
 import com.pharmacyPOS.data.entities.Inventory;
@@ -13,10 +14,27 @@ import java.util.List;
 public class SalesService {
     private SalesDao salesDao;
     private InventoryDao inventoryDao;
+    private Product product;
 
     public SalesService(SalesDao salesDao, InventoryDao inventoryDao) {
         this.salesDao = salesDao;
         this.inventoryDao = inventoryDao;
+    }
+    public void SaleService(SalesDao salesDao) {
+        this.salesDao = salesDao;
+    }
+
+    public List<Sale> getAllSales() {
+        return salesDao.getAllSales();
+    }
+
+    public List<Product> getAllInventory() {
+        return salesDao.getAllInventory();
+    }
+
+    public SalesService(SalesDao saleDao)
+    {
+        this.salesDao=saleDao;
     }
 
     /**
@@ -53,6 +71,10 @@ public class SalesService {
      */
     public List<Sale> getSalesByPeriod(Date startDate, Date endDate) throws SQLException {
         return salesDao.getSalesByDateRange(startDate, endDate);
+    }
+
+    public Product getProductById(int productId) {
+        return product.getProduct(productId);
     }
 
     // Additional sales-related methods...
