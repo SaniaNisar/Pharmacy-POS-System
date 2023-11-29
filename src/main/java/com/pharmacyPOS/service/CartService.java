@@ -46,8 +46,7 @@ public class CartService {
         cartDao.removeItemFromCart(cartId, productId);
     }
 
-    public Cart getCurrentCart(int id) throws SQLException
-    {
+    public Cart getCurrentCart(int id) throws SQLException {
         return (cartDao.getCurrentCart(id));
     }
 
@@ -55,4 +54,13 @@ public class CartService {
         return (cartDao.getCartItems(cartId));
     }
 
+    public void clearCart(int cartId) {
+        try {
+            // Call the method in CartDao to remove all items from the cart
+            cartDao.clearCartItems(cartId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle the exception, maybe log it or inform the user
+        }
+    }
 }
