@@ -1,5 +1,7 @@
 package com.pharmacyPOS.data.entities;
 
+import com.pharmacyPOS.data.dao.ProductDao;
+
 import java.util.Date;
 
 public class Product {
@@ -9,6 +11,7 @@ public class Product {
     private double price;
     private int categoryId;
     private Date expirationDate;
+    private ProductDao productDao;
 
     // Default constructor
     public Product() {
@@ -93,5 +96,11 @@ public class Product {
                 ", expirationDate=" + expirationDate +
                 '}';
     }
+    public Product getProduct(int productId)
+    {
+        return productDao.getProductById(productId);
+    }
+
+
     // Implement equals and hashCode if necessary.
 }
