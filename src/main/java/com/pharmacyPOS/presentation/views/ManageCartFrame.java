@@ -19,6 +19,7 @@ import com.pharmacyPOS.service.CartService;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ManageCartFrame extends JFrame {
@@ -26,8 +27,9 @@ public class ManageCartFrame extends JFrame {
     private JTable cartTable;
     private DefaultTableModel cartTableModel;
     private JButton processOrderButton;
+    private JButton clearButton;
     private int userId;
-    private int currentOrderId=0; // To keep track of the current order ID
+    private int currentOrderId; // To keep track of the current order ID
     private OrderDao orderDao; // Ensure that orderDao is initialized properly
 
     public ManageCartFrame(int userId) {
@@ -68,10 +70,33 @@ public class ManageCartFrame extends JFrame {
 
         processOrderButton = new JButton("Process Order");
         processOrderButton.addActionListener(this::onProcessOrderClicked);
-        add(processOrderButton, BorderLayout.SOUTH);
+        clearButton = new JButton("Clear Button");
+        clearButton.addActionListener(this::onclearButtonClicked);
+
+        // New panel to hold both buttons
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(processOrderButton);
+        buttonPanel.add(clearButton);
+
+        // Add the new panel to the SOUTH area
+        add(buttonPanel, BorderLayout.SOUTH);
 
         add(new JScrollPane(cartTable), BorderLayout.CENTER);
     }
+
+    private void onclearButtonClicked(ActionEvent actionEvent) {
+        try {
+            Cart currentCart = cartController.getCurrentCart(userId);
+            cartController.clearCart(currentCart.getCartId());
+            loadCartItems();
+//            cartTableModel.setRowCount(0); // Clear the table model
+            // Clear the cart
+        } catch (SQLException e) {
+            e.printStackTrace();;
+        }
+    }
+
+
 
     class ButtonRenderer extends JButton implements TableCellRenderer {
         public ButtonRenderer() {
@@ -118,6 +143,7 @@ public class ManageCartFrame extends JFrame {
                 // Perform action on button click (e.g., remove item from cart)
                 int productId = (int) cartTableModel.getValueAt(editedRow, 0);
                 removeItemFromCart(productId);
+                cartTableModel.removeRow(editedRow); // Remove the row from the table model
             }
             isPushed = false;
             return label;
@@ -152,13 +178,18 @@ public class ManageCartFrame extends JFrame {
             Cart currentCart = cartController.getCurrentCart(userId);
             cartController.removeItemFromCart(currentCart.getCartId(), productId);
             JOptionPane.showMessageDialog(this, "Item removed successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error removing item from cart", "Error", JOptionPane.ERROR_MESSAGE);
-        }
 
-        // Reload the cart items to reflect the changes
-        loadCartItems();
+            // After removing, check if the cart is empty, and if so, reset the table model
+            if (cartController.getCartItems(userId).isEmpty()) {
+                cartTableModel.setRowCount(0); // This will clear the table
+            } else {
+                loadCartItems();
+            }
+        }
+        catch (SQLException e)// Reload the cart items to reflect the changes
+        {
+            e.printStackTrace();
+        }
     }
 
 
@@ -171,50 +202,64 @@ public class ManageCartFrame extends JFrame {
         new ManageCartFrame(userId);
     }
 
-    private void onProcessOrderClicked(ActionEvent e) {
-        // Calculate the total amount (replace with actual calculation logic)
-        double totalAmount = calculateTotalAmount();
+    private void onProcessOrderClicked(ActionEvent actionEvent){
+        try {
+            Cart currentCart = cartController.getCurrentCart(userId);
+            if (currentCart == null)
+            {
+                // Calculate the total amount (replace with actual calculation logic)
+                double totalAmount = calculateTotalAmount();
 
-        // Show the initial processing message
-        JOptionPane.showMessageDialog(this, "Processing your Order!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                // Show the initial processing message
+                JOptionPane.showMessageDialog(this, "Processing your Order!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
-        // Create the payment frame
-        JFrame paymentFrame = new JFrame("Payment");
-        paymentFrame.setSize(300, 200);
-        paymentFrame.setLayout(new FlowLayout());
-        paymentFrame.setResizable(false); // Prevent resizing the frame
+                // Create the payment frame
+                JFrame paymentFrame = new JFrame("Payment");
+                paymentFrame.setSize(300, 200);
+                paymentFrame.setLayout(new FlowLayout());
+                paymentFrame.setResizable(false); // Prevent resizing the frame
 
-        // Add components to the payment frame
-        JLabel totalAmountLabel = new JLabel("Total Amount: ");
-        JTextField totalAmountField = new JTextField(20);
-        totalAmountField.setText(String.format("%.2f", totalAmount));
-        totalAmountField.setEditable(false);
+                // Add components to the payment frame
+                JLabel totalAmountLabel = new JLabel("Total Amount: ");
+                JTextField totalAmountField = new JTextField(20);
+                totalAmountField.setText(String.format("%.2f", totalAmount));
+                totalAmountField.setEditable(false);
 
-        JLabel amountPaidLabel = new JLabel("Amount Paid: ");
-        JTextField amountPaidField = new JTextField(20);
+                JLabel amountPaidLabel = new JLabel("Amount Paid: ");
+                JTextField amountPaidField = new JTextField(20);
 
-        JButton payButton1 = new JButton("Pay");
-        payButton1.addActionListener(event->{
-            try {
-                onPayClicked(totalAmount, amountPaidField.getText(), paymentFrame);
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+                JButton payButton1 = new JButton("Pay");
+                payButton1.addActionListener(event -> {
+                    try {
+                        onPayClicked(totalAmount, amountPaidField.getText(), paymentFrame);
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
+                JButton cancelOrder = new JButton("Cancel Order");
+                cancelOrder.addActionListener(event -> cancellationOrder(paymentFrame));
+
+
+                paymentFrame.add(totalAmountLabel);
+                paymentFrame.add(totalAmountField);
+                paymentFrame.add(amountPaidLabel);
+                paymentFrame.add(amountPaidField);
+                paymentFrame.add(cancelOrder);
+                paymentFrame.add(payButton1);
+
+                // Center the payment frame on the screen
+                paymentFrame.setLocationRelativeTo(null);
+                paymentFrame.setVisible(true);
             }
-        });
-        JButton cancelOrder = new JButton("Cancel Order");
-        cancelOrder.addActionListener(event -> cancellationOrder(paymentFrame));
-
-
-        paymentFrame.add(totalAmountLabel);
-        paymentFrame.add(totalAmountField);
-        paymentFrame.add(amountPaidLabel);
-        paymentFrame.add(amountPaidField);
-        paymentFrame.add(cancelOrder);
-        paymentFrame.add(payButton1);
-
-        // Center the payment frame on the screen
-        paymentFrame.setLocationRelativeTo(null);
-        paymentFrame.setVisible(true);
+            else
+            {
+                JOptionPane.showMessageDialog(this, "Nothing In Cart to Process", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error processing order", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void cancellationOrder(JFrame paymentFrame) {
@@ -266,7 +311,7 @@ public class ManageCartFrame extends JFrame {
                     // Create Order object
                     Order order = new Order();
                     order.setUserId(userId);
-//                    order.setTimestamp(new Date());
+                    order.setTimestamp(new Date());
                     order.setOrderDetails(orderDetailsArray);
 
                     // Save Order in the database (implement saveOrder in OrderDao)
