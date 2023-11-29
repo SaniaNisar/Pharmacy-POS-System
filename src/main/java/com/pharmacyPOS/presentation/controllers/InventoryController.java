@@ -103,4 +103,7 @@ public class InventoryController {
         return (inventoryService.getProductNameById(productId));
     }
 
+    public Inventory getInventoryByProductId(int productId) {
+        return inventoryService.getInventoryByProductId(productId);
+    }
 }
