@@ -12,12 +12,13 @@ import java.sql.SQLException;
 import com.pharmacyPOS.data.dao.CartDao;
 import com.pharmacyPOS.data.dao.OrderDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
-import com.pharmacyPOS.data.entities.Cart;
-import com.pharmacyPOS.data.entities.CartItem;
-import com.pharmacyPOS.data.entities.Order;
+import com.pharmacyPOS.data.entities.*;
 import com.pharmacyPOS.presentation.controllers.CartController;
+import com.pharmacyPOS.presentation.controllers.InventoryController;
 import com.pharmacyPOS.service.CartService;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ManageCartFrame extends JFrame {
@@ -26,7 +27,7 @@ public class ManageCartFrame extends JFrame {
     private DefaultTableModel cartTableModel;
     private JButton processOrderButton;
     private int userId;
-    private int currentOrderId; // To keep track of the current order ID
+    private int currentOrderId=0; // To keep track of the current order ID
     private OrderDao orderDao; // Ensure that orderDao is initialized properly
 
     public ManageCartFrame(int userId) {
@@ -192,17 +193,24 @@ public class ManageCartFrame extends JFrame {
         JLabel amountPaidLabel = new JLabel("Amount Paid: ");
         JTextField amountPaidField = new JTextField(20);
 
-        JButton payButton = new JButton("Generate Invoice");
+        JButton payButton1 = new JButton("Pay");
+        payButton1.addActionListener(event->{
+            try {
+                onPayClicked(totalAmount, amountPaidField.getText(), paymentFrame);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         JButton cancelOrder = new JButton("Cancel Order");
-        payButton.addActionListener(event -> onPayClicked(totalAmount, amountPaidField.getText(), paymentFrame));
         cancelOrder.addActionListener(event -> cancellationOrder(paymentFrame));
+
 
         paymentFrame.add(totalAmountLabel);
         paymentFrame.add(totalAmountField);
         paymentFrame.add(amountPaidLabel);
         paymentFrame.add(amountPaidField);
-        paymentFrame.add(payButton);
         paymentFrame.add(cancelOrder);
+        paymentFrame.add(payButton1);
 
         // Center the payment frame on the screen
         paymentFrame.setLocationRelativeTo(null);
@@ -243,17 +251,103 @@ public class ManageCartFrame extends JFrame {
         return total;
     }
 
-    private void onPayClicked(double totalAmount, String amountPaidStr, JFrame paymentFrame) {
+    private void onPayClicked(double totalAmount, String amountPaidStr, JFrame paymentFrame) throws SQLException {
         try {
             double amountPaid = Double.parseDouble(amountPaidStr);
             if (amountPaid >= totalAmount) {
-                JOptionPane.showMessageDialog(paymentFrame, "Payment successful! Change: " + (amountPaid - totalAmount), "Payment", JOptionPane.INFORMATION_MESSAGE);
-                paymentFrame.dispose(); // Close the payment frame
-            } else {
+                try {
+                    Cart currentCart = cartController.getCurrentCart(userId);
+                    List<OrderDetail> orderDetailsList = createOrderDetailsFromCart(currentCart);
+
+                    // Convert List to Array
+                    OrderDetail[] orderDetailsArray = new OrderDetail[orderDetailsList.size()];
+                    orderDetailsArray = orderDetailsList.toArray(orderDetailsArray);
+
+                    // Create Order object
+                    Order order = new Order();
+                    order.setUserId(userId);
+//                    order.setTimestamp(new Date());
+                    order.setOrderDetails(orderDetailsArray);
+
+                    // Save Order in the database (implement saveOrder in OrderDao)
+                    orderDao.saveOrder(order);
+
+                    JOptionPane.showMessageDialog(paymentFrame, "Payment successful! Change: " + (amountPaid - totalAmount), "Payment", JOptionPane.INFORMATION_MESSAGE);
+                    // invoice generation logic willl be added here
+
+                    JOptionPane.showMessageDialog(this, "Invoice generated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    paymentFrame.dispose(); // Close the payment frame
+
+                    // Clear the cart
+                    cartController.clearCart(currentCart.getCartId());
+
+                    // Update inventory
+                    updateInventory(orderDetailsList);
+
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Failed to generate invoice", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }else {
                 JOptionPane.showMessageDialog(paymentFrame, "Insufficient amount paid.", "Payment Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(paymentFrame, "Invalid amount entered.", "Payment Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    private InventoryController inventorycontroller; // Make sure this is initialized
+
+    /**
+     * Updates the inventory based on the order details.
+     * @param orderDetailsList A list of OrderDetail objects representing the items ordered.
+     */
+    private void updateInventory(List<OrderDetail> orderDetailsList) throws SQLException {
+        for (OrderDetail orderDetail : orderDetailsList) {
+            int productId = orderDetail.getProductId();
+            int orderedQuantity = orderDetail.getQuantity();
+
+            // Retrieve the current inventory for this product
+            Inventory inventory = inventorycontroller.getInventoryByProductId(productId);
+            if (inventory != null) {
+                // Check if enough inventory is available
+                if (inventory.getQuantity() >= orderedQuantity) {
+                    // Decrease the inventory quantity
+                    int newQuantity = inventory.getQuantity() - orderedQuantity;
+                    inventory.setQuantity(newQuantity);
+                    inventorycontroller.updateInventoryItem(inventory);
+                } else {
+                    // Handle insufficient inventory
+                    throw new SQLException("Insufficient inventory for product ID: " + productId);
+                }
+            } else {
+                // Handle case where inventory item doesn't exist
+                throw new SQLException("Inventory item not found for product ID: " + productId);
+            }
+        }
+    }
+
+    private List<OrderDetail> createOrderDetailsFromCart(Cart cart) {
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        for (SaleItem item : cart.getItems()) {
+            OrderDetail detail = new OrderDetail(currentOrderId, item.getProductId(), item.getQuantity(), item.getPrice());
+            orderDetails.add(detail);
+        }
+        return orderDetails;
+    }
+
+    private Order createOrderFromCart() throws SQLException {
+        Cart currentCart = cartController.getCurrentCart(userId);
+        List<OrderDetail> orderDetails = new ArrayList<>();
+
+        for (SaleItem item : currentCart.getItems()) {
+            OrderDetail detail = new OrderDetail(0, 0, item.getProductId(), item.getQuantity(), item.getPrice());
+            orderDetails.add(detail);
+        }
+
+        Order order = new Order(0, userId, new Timestamp(System.currentTimeMillis()));
+        order.setOrderDetails(orderDetails.toArray(new OrderDetail[0]));
+        return order;
+    }
 }
+
