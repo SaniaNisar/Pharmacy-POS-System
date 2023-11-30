@@ -74,8 +74,26 @@ public class SignUpPage extends JFrame {
 
     private void signUp() {
         String username = usernameField.getText();
+        if (username.isEmpty()) {
+            username = JOptionPane.showInputDialog(this, "Please enter a username: ");
+            if (username == null || username.isEmpty()) {
+                // User cancelled or entered an empty string
+                return; // Stop the signUp process
+            }
+            usernameField.setText(username); // Set the text field with the entered value
+        }
+
         char[] passwordChars = passwordField.getPassword();
         String password = new String(passwordChars);
+        if (password.isEmpty()) {
+            password = JOptionPane.showInputDialog(this, "Please enter a password: ");
+            if (password == null || password.isEmpty()) {
+                // User cancelled or entered an empty string
+                return; // Stop the signUp process
+            }
+            passwordField.setText(password); // Set the password field with the entered value
+        }
+
         String role = (String) roleComboBox.getSelectedItem();
 
         try {
@@ -91,6 +109,7 @@ public class SignUpPage extends JFrame {
             JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
         }
     }
+
 
     public static void main(String[] args) {
         DatabaseConnection databaseConnection = new DatabaseConnection(); // Initialize your database connection
