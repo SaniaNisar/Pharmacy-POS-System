@@ -121,10 +121,9 @@ public class SearchInventoryFrame extends JFrame {
 
     private void initializeCart() {
         try {
-            // Attempt to retrieve the current cart for the user
             currentCart = cartController.getCurrentCart(userId);
-            if (currentCart == null) {
-                // If no current cart exists, create a new cart for the user
+            if (currentCart == null)
+            {
                 currentCart = new Cart(userId);
                 int cartId = cartController.createCart(currentCart);
                 currentCart.setCartId(cartId);

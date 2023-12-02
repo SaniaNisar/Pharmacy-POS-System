@@ -21,6 +21,10 @@ public class CartService {
         return cartDao.createCart(cart);
     }
 
+    public void updateCartItemQuantity(int cartId, int productId, int newQuantity) throws SQLException {
+        cartDao.updateCartItemQuantity(cartId, productId, newQuantity);
+    }
+
     // Read a Cart by ID
     public Cart getCartById(int cartId) throws SQLException {
         return cartDao.getCartById(cartId);

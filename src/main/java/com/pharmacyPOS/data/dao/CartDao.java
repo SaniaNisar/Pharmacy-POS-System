@@ -69,6 +69,50 @@ public class CartDao {
         // It might involve updating the quantity of items, removing items, etc.
     }
 
+    // Helper method to remove an item from a cart
+    public void removeItemFromCart(int cartId, int productId) throws SQLException {
+        String sql = "SELECT quantity FROM cart_items WHERE cart_id = ? AND product_id = ?";
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, cartId);
+            pstmt.setInt(2, productId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int currentQuantity = rs.getInt("quantity");
+
+                    if (currentQuantity > 1) {
+                        // If quantity is more than 1, decrement the quantity
+                        updateCartItemQuantity(cartId, productId, currentQuantity - 1);
+                    } else {
+                        // If quantity is 1, remove the item from the cart
+                        String deleteSql = "DELETE FROM cart_items WHERE cart_id = ? AND product_id = ?";
+                        try (PreparedStatement deletePstmt = conn.prepareStatement(deleteSql)) {
+                            deletePstmt.setInt(1, cartId);
+                            deletePstmt.setInt(2, productId);
+                            deletePstmt.executeUpdate();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    public void updateCartItemQuantity(int cartId, int productId, int newQuantity) throws SQLException {
+        String sql = "UPDATE cart_items SET quantity = ? WHERE cart_id = ? AND product_id = ?";
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, newQuantity);
+            pstmt.setInt(2, cartId);
+            pstmt.setInt(3, productId);
+
+            pstmt.executeUpdate();
+        }
+    }
+
     // Delete a Cart by ID
     public void deleteCart(int cartId) throws SQLException {
         String sql = "DELETE FROM carts WHERE cart_id = ?";
@@ -95,7 +139,7 @@ public class CartDao {
     }
 
     // Helper method to remove an item from a cart
-    public void removeItemFromCart(int cartId, int productId) throws SQLException {
+    /*public void removeItemFromCart(int cartId, int productId) throws SQLException {
         String sql = "DELETE FROM cart_items WHERE cart_id = ? AND product_id = ?";
         try (Connection conn = dbConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -105,6 +149,8 @@ public class CartDao {
             pstmt.executeUpdate();
         }
     }
+
+     */
 
     // Check if a cart exists
     private boolean doesCartExist(int cartId) throws SQLException {

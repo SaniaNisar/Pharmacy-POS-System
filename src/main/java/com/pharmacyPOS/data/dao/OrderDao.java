@@ -2,6 +2,8 @@ package com.pharmacyPOS.data.dao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.Order;
 import com.pharmacyPOS.data.entities.OrderDetail;
+import com.pharmacyPOS.presentation.controllers.CartController;
+import com.pharmacyPOS.service.CartService;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -118,7 +120,19 @@ public class OrderDao {
     }
 
 
-    public void saveOrder(Order order) {
+    public void saveOrder(Order order) throws SQLException {
+        // Create the order and get its generated ID
+        createOrder(order);
 
+        // For each order detail, save it using the generated order ID
+        for (OrderDetail detail : order.getOrderDetails()) {
+            detail.setOrderId(order.getOrderId());
+            saveOrderDetail(detail);
+
+            // Decrement inventory if needed
+            CartController cartController = new CartController(new CartService(new CartDao(databaseConnection)));
+            cartController.decrementInventory(detail.getProductId(), detail.getQuantity());
+        }
     }
+
 }

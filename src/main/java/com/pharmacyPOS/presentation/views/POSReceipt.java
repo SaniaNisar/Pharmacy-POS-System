@@ -117,4 +117,6 @@ public class POSReceipt extends JFrame {
         return "Invoice Slip - " + currentDate + ".txt";
     }
 
+    
+
 }

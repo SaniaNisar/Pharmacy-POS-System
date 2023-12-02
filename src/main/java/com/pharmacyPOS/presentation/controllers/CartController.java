@@ -1,6 +1,7 @@
 package com.pharmacyPOS.presentation.controllers;
 
 import com.pharmacyPOS.data.dao.InventoryDao;
+import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.CartItem;
 import com.pharmacyPOS.data.entities.Inventory;
 import com.pharmacyPOS.service.CartService;
@@ -21,6 +22,10 @@ public class CartController {
     // Create a new Cart
     public int createCart(Cart cart) throws SQLException {
         return cartService.createCart(cart);
+    }
+
+    public void updateCartItemQuantity(int cartId, int productId, int newQuantity) throws SQLException {
+        cartService.updateCartItemQuantity(cartId, productId, newQuantity);
     }
 
     // Read a Cart by ID
@@ -73,6 +78,9 @@ public class CartController {
     private InventoryDao inventoryDao;
     public void decrementInventory(int productId, int quantity) throws SQLException {
         // Retrieve current inventory for the product
+        DatabaseConnection conn = new DatabaseConnection();
+        conn.connect();
+        inventoryDao = new InventoryDao(conn);
         Inventory inventory = inventoryDao.getInventoryByProductId(productId);
         if (inventory != null && inventory.getQuantity() >= quantity) {
             inventory.setQuantity(inventory.getQuantity() - quantity);
