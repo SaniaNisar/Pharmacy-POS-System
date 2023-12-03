@@ -90,6 +90,11 @@ public class CartController {
         }
     }
 
+    public int getCartItemQuantity(int cartId, int productId) throws SQLException
+    {
+        return (cartService.getCartItemQuantity(cartId,productId));
+    }
+
     public void clearCart(int cartId) {
        cartService.clearCart(cartId);
     }

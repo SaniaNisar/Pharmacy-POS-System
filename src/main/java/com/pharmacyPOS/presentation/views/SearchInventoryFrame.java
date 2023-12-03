@@ -134,7 +134,7 @@ public class SearchInventoryFrame extends JFrame {
         }
     }
 
-    private void onAddToCartClicked(ActionEvent e) {
+    /*private void onAddToCartClicked(ActionEvent e) {
         int selectedRow = searchResultsTable.getSelectedRow();
         if (selectedRow != -1) {
             String productId = searchResultsTableModel.getValueAt(selectedRow, 0).toString();
@@ -156,6 +156,48 @@ public class SearchInventoryFrame extends JFrame {
             }
         }
     }
+
+     */
+
+    private void onAddToCartClicked(ActionEvent e) {
+        int selectedRow = searchResultsTable.getSelectedRow();
+        if (selectedRow != -1) {
+            String productId = searchResultsTableModel.getValueAt(selectedRow, 0).toString();
+            String productName = searchResultsTableModel.getValueAt(selectedRow, 1).toString();
+            double price = Double.parseDouble(searchResultsTableModel.getValueAt(selectedRow, 3).toString());
+
+            // Check if the product is already in the cart
+            SaleItem existingItem = currentCart.getItemByProductId(Integer.parseInt(productId));
+
+            if (existingItem != null) {
+                // If the product is already in the cart, increase the quantity
+                existingItem.setQuantity(existingItem.getQuantity() + 1);
+                try {
+                    // Update the quantity in the database
+                    cartController.updateCartItemQuantity(currentCart.getCartId(), Integer.parseInt(productId), existingItem.getQuantity());
+                    JOptionPane.showMessageDialog(this, "Quantity increased for: " + productName);
+                } catch (SQLException sqlException) {
+                    JOptionPane.showMessageDialog(this, "Error updating quantity in cart: " + sqlException.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    sqlException.printStackTrace();
+                }
+            } else {
+                // If the product is not in the cart, add a new item
+                SaleItem newItem = new SaleItem(Integer.parseInt(productId), 1, price);
+
+                try {
+                    // Add the item to the currentCart object
+                    currentCart.addItem(newItem);
+                    // Persist the new item in the cart to the database
+                    cartController.addItemToCart(currentCart.getCartId(), newItem);
+                    JOptionPane.showMessageDialog(this, "Added to cart: " + productName);
+                } catch (SQLException sqlException) {
+                    JOptionPane.showMessageDialog(this, "Error adding to cart: " + sqlException.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    sqlException.printStackTrace();
+                }
+            }
+        }
+    }
+
 
     public static void main(String[] args) {
         new SearchInventoryFrame(2);

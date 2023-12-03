@@ -30,8 +30,8 @@ public class ManageCartFrame extends JFrame {
     private JButton processOrderButton;
     private JButton clearButton;
     private int userId;
-    private int currentOrderId; // To keep track of the current order ID
-    private OrderDao orderDao; // Ensure that orderDao is initialized properly
+    private int currentOrderId;
+    private OrderDao orderDao;
     private JLabel totalAmountLabel;
 
     public ManageCartFrame(int userId) {
@@ -98,20 +98,23 @@ public class ManageCartFrame extends JFrame {
             Cart currentCart = cartController.getCurrentCart(userId);
             cartController.clearCart(currentCart.getCartId());
             loadCartItems();
-//            cartTableModel.setRowCount(0); // Clear the table model
-            // Clear the cart
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();;
         }
         refreshTotalAmount();
     }
 
 
-    private void refreshTotalAmount() {
-        try {
+    private void refreshTotalAmount()
+    {
+        try
+        {
             double total = cartController.getCartTotal(userId);
             totalAmountLabel.setText("Total: $" + String.format("%.2f", total));
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             ex.printStackTrace();
             totalAmountLabel.setText("Error calculating total");
         }
@@ -133,6 +136,7 @@ public class ManageCartFrame extends JFrame {
         private JButton button;
         private String label;
         private boolean isPushed;
+
         private int editedRow;
 
         public ButtonEditor(JCheckBox checkBox) {
@@ -158,20 +162,52 @@ public class ManageCartFrame extends JFrame {
         }
 
         public Object getCellEditorValue() {
-            if (isPushed) {
-                // Perform action on button click (e.g., remove item from cart)
-                int productId = (int) cartTableModel.getValueAt(editedRow, 0);
-                int cartId = getCurrentCartId();
-                try {
-                    cartController.removeItemFromCart(cartId,productId);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                cartTableModel.removeRow(editedRow); // Remove the row from the table model
-            }
             isPushed = false;
             return label;
         }
+
+        /*public void actionPerformed(ActionEvent e) {
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    int productId = (int) cartTableModel.getValueAt(editedRow, 0);
+                    int cartId = getCurrentCartId();
+                    removeItemFromCart(productId);
+                    cartTableModel.removeRow(editedRow);
+                    refreshTotalAmount();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+            fireEditingStopped();
+        }
+         */
+
+        public void actionPerformed(ActionEvent e) {
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    int productId = (int) cartTableModel.getValueAt(editedRow, 0);
+                    int currentQuantity = (int) cartTableModel.getValueAt(editedRow, 2);
+                    int cartId = getCurrentCartId();
+
+                    if (currentQuantity > 1) {
+                        // Decrement quantity by 1 in the table model and database
+                        cartTableModel.setValueAt(currentQuantity - 1, editedRow, 2);
+                        cartController.updateCartItemQuantity(cartId, productId, currentQuantity - 1);
+                    } else {
+                        // Remove item from cart and table model
+                        cartController.removeItemFromCart(cartId, productId);
+                        cartTableModel.removeRow(editedRow);
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Item updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error updating item in cart", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            });
+            fireEditingStopped();
+        }
+
 
         private int getCurrentCartId() {
             Cart cart = null;
@@ -180,14 +216,10 @@ public class ManageCartFrame extends JFrame {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            int cartID=cart.getCartId();
-            return cartID;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            fireEditingStopped();
+            return cart.getCartId();
         }
     }
+
 
     private int findRowByProductId(int productId) {
         for (int row = 0; row < cartTableModel.getRowCount(); row++) {
@@ -198,7 +230,7 @@ public class ManageCartFrame extends JFrame {
         return -1; // Return -1 if not found
     }
 
-    private void loadCartItems() {
+    /*private void loadCartItems() {
         cartTableModel.setRowCount(0); // Clear existing rows
         try {
             List<CartItem> cartItems = cartController.getCartItems(userId);
@@ -225,6 +257,35 @@ public class ManageCartFrame extends JFrame {
         }
         refreshTotalAmount();
     }
+     */
+    private void loadCartItems() {
+        try {
+            List<CartItem> cartItems = cartController.getCartItems(userId);
+            cartTableModel.setRowCount(0); // Clear existing rows
+
+            for (CartItem item : cartItems) {
+                int row = findRowByProductId(item.getProductId());
+                if (row != -1) {
+                    // Update quantity in the existing row
+                    cartTableModel.setValueAt(item.getQuantity(), row, 2);
+                } else {
+                    // Add new row for the product
+                    cartTableModel.addRow(new Object[]{
+                            item.getProductId(),
+                            item.getProductName(),
+                            item.getQuantity(),
+                            item.getPrice(),
+                            "Remove"
+                    });
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error loading cart items", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        refreshTotalAmount();
+    }
+
 
     private void refreshCartDisplay() {
         // Implement logic to reload cart items and refresh the total amount
@@ -413,6 +474,33 @@ public class ManageCartFrame extends JFrame {
         JOptionPane.showMessageDialog(this, "Order processed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    private void removeItemFromCart(int productId) {
+        try {
+            Cart currentCart = cartController.getCurrentCart(userId);
+            int cartId = currentCart.getCartId();
+            int row = findRowByProductId(productId);
+            int currentQuantity = (int) cartTableModel.getValueAt(row, 2);
+
+            if (currentQuantity > 1) {
+                // Decrement quantity by 1 in the table model
+                cartTableModel.setValueAt(currentQuantity - 1, row, 2);
+                // Update quantity in the database
+                cartController.updateCartItemQuantity(cartId, productId, currentQuantity - 1);
+            } else {
+                // Remove row from the table model
+                cartTableModel.removeRow(row);
+                // Remove item from the cart in the database
+                cartController.removeItemFromCart(cartId, productId);
+            }
+
+            JOptionPane.showMessageDialog(this, "Item updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error updating item in cart", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        refreshTotalAmount(); // Refresh the total amount display
+    }
 
 }
 

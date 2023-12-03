@@ -1,8 +1,10 @@
 package com.pharmacyPOS.data.dao;
 
+import com.mysql.cj.Session;
 import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.Cart;
 import com.pharmacyPOS.data.entities.CartItem;
+import com.pharmacyPOS.data.entities.Inventory;
 import com.pharmacyPOS.data.entities.SaleItem;
 
 import java.sql.*;
@@ -112,7 +114,6 @@ public class CartDao {
             pstmt.executeUpdate();
         }
     }
-
     // Delete a Cart by ID
     public void deleteCart(int cartId) throws SQLException {
         String sql = "DELETE FROM carts WHERE cart_id = ?";
@@ -121,6 +122,23 @@ public class CartDao {
 
             pstmt.setInt(1, cartId);
             pstmt.executeUpdate();
+        }
+    }
+
+    public int getCartItemQuantity(int cartId, int productId) throws SQLException {
+        String sql = "SELECT quantity FROM cart_items WHERE cart_id = ? AND product_id = ?";
+        try (Connection conn = dbConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, cartId);
+            pstmt.setInt(2, productId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("quantity");
+                } else {
+                    return 0; // Return 0 if the item is not found in the cart
+                }
+            }
         }
     }
 

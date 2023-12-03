@@ -50,6 +50,11 @@ public class CartService {
         cartDao.removeItemFromCart(cartId, productId);
     }
 
+    public int getCartItemQuantity(int cartId, int productId) throws SQLException
+    {
+        return (cartDao.getCartItemQuantity(cartId,productId));
+    }
+
     public Cart getCurrentCart(int id) throws SQLException {
         return (cartDao.getCurrentCart(id));
     }

@@ -45,6 +45,17 @@ public class Cart extends ItemContainer
                 .sum();
     }
 
+    public SaleItem getItemByProductId(int productId) {
+            for (SaleItem item : items) {
+                if (item.getProductId() == productId) {
+                    return item;
+                }
+            }
+            return null; // Return null if the item is not found
+        }
+
+
+
     public int getCartId() {
         return cartId;
     }
