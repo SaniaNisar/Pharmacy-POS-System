@@ -198,6 +198,7 @@ public class ManageCartFrame extends JFrame {
                         cartController.removeItemFromCart(cartId, productId);
                         cartTableModel.removeRow(editedRow);
                     }
+                    refreshTotalAmount();
 
                     JOptionPane.showMessageDialog(null, "Item updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception ex) {
