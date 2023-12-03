@@ -109,6 +109,8 @@ public class SalesDao {
             pstmt.setDate(2, endDate);
             ResultSet rs = pstmt.executeQuery();
 
+            System.out.println("Executing query: " + pstmt); // Debug print
+
             while (rs.next()) {
                 Sale sale = new Sale();
                 // Assuming Sale has a constructor that accepts ID, Date, and totalCost
@@ -174,7 +176,8 @@ public class SalesDao {
         }
         return total;
     }
-    private List<SaleItem> getSaleItems(int saleId) {
+
+   /* private List<SaleItem> getSaleItems(int saleId) {
         List<SaleItem> saleItems = new ArrayList<>();
         String query = "SELECT * FROM sale_items WHERE sale_id = ?";
         try (PreparedStatement ps = databaseConnection.connect().prepareStatement(query)) {
@@ -193,6 +196,33 @@ public class SalesDao {
         }
         return saleItems;
     }
+    */
+
+    public List<SaleItem> getSaleItems(int saleId) {
+        List<SaleItem> saleItems = new ArrayList<>();
+        String query = "SELECT * FROM sale_items WHERE sale_id = ?";
+        try (PreparedStatement ps = databaseConnection.connect().prepareStatement(query)) {
+            ps.setInt(1, saleId);
+            ResultSet rs = ps.executeQuery();
+
+            if (!rs.next()) {
+                System.out.println("No sale items found for sale ID: " + saleId);
+                return saleItems; // Return empty list if no items found
+            }
+
+            do {
+                SaleItem item = new SaleItem();
+                item.setProductId(rs.getInt("product_id"));
+                item.setQuantity(rs.getInt("quantity"));
+                item.setPrice(rs.getDouble("price"));
+                saleItems.add(item);
+            } while (rs.next());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return saleItems;
+    }
+
 
     public List<Product> getAllInventory() {
         List<Product> inventory = new ArrayList<>();
@@ -211,5 +241,22 @@ public class SalesDao {
             e.printStackTrace();
         }
         return inventory;
+    }
+
+    public String getProductNameById(int productId) {
+        String sql = "SELECT name FROM products WHERE product_id = ?";
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, productId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("name");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ""; // Return empty string if product name is not found
     }
 }

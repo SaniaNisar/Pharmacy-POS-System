@@ -1,43 +1,40 @@
 package com.pharmacyPOS.data.entities;
+
+import java.sql.Date;
+
 public class SalesReport extends Report {
     private int productId;
     private String productName;
     private int totalQuantitySold;
     private double totalSalesAmount;
+    private Date saleDate; // Added field to store the date of the sale
 
-    // Constructor without product name
-    public SalesReport(int productId, int totalQuantitySold, double totalSalesAmount) {
-        this.productId = productId;
-        this.totalQuantitySold = totalQuantitySold;
-        this.totalSalesAmount = totalSalesAmount;
-    }
-
-    // Constructor with product name
-    public SalesReport(int productId, String productName, int totalQuantitySold, double totalSalesAmount) {
+    // Constructor with product name and sale date
+    public SalesReport(int productId, String productName, int totalQuantitySold, double totalSalesAmount, Date saleDate) {
         this.productId = productId;
         this.productName = productName;
         this.totalQuantitySold = totalQuantitySold;
         this.totalSalesAmount = totalSalesAmount;
+        this.saleDate = saleDate; // Initialize the sale date
     }
 
-    // Getters
+
     public int getProductId() {
         return productId;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public int getTotalQuantitySold() {
-        return totalQuantitySold;
     }
 
     public double getTotalSalesAmount() {
         return totalSalesAmount;
     }
 
-    // Setters
+    public int getTotalQuantitySold() {
+        return totalQuantitySold;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
     public void setProductId(int productId) {
         this.productId = productId;
     }
@@ -46,12 +43,20 @@ public class SalesReport extends Report {
         this.productName = productName;
     }
 
+    public void setTotalSalesAmount(double totalSalesAmount) {
+        this.totalSalesAmount = totalSalesAmount;
+    }
+
     public void setTotalQuantitySold(int totalQuantitySold) {
         this.totalQuantitySold = totalQuantitySold;
     }
 
-    public void setTotalSalesAmount(double totalSalesAmount) {
-        this.totalSalesAmount = totalSalesAmount;
+    public Date getSaleDate() {
+        return saleDate;
+    }
+
+    public void setSaleDate(Date saleDate) {
+        this.saleDate = saleDate;
     }
 
     // toString method for debugging
@@ -62,6 +67,7 @@ public class SalesReport extends Report {
                 ", productName='" + productName + '\'' +
                 ", totalQuantitySold=" + totalQuantitySold +
                 ", totalSalesAmount=" + totalSalesAmount +
+                ", saleDate=" + saleDate +
                 '}';
     }
 

@@ -9,13 +9,13 @@ import java.util.List;
 
 public class ReportDao {
 
-    private final DatabaseConnection databaseConnection;
+    //private final DatabaseConnection databaseConnection;
 
-    public ReportDao(DatabaseConnection databaseConnection) {
-        this.databaseConnection = databaseConnection;
-    }
+    //public ReportDao(DatabaseConnection databaseConnection) {
+      //  this.databaseConnection = databaseConnection;
+    //}
 
-    public List<SalesReport> generateSalesReport(Date startDate, Date endDate) {
+    /*public List<SalesReport> generateSalesReport(Date startDate, Date endDate) {
         List<SalesReport> salesReports = new ArrayList<>();
         String sql = "SELECT product_id, SUM(quantity) as total_quantity, SUM(quantity * unit_price) as total_sales " +
                 "FROM order_details od " +
@@ -41,8 +41,9 @@ public class ReportDao {
         }
         return salesReports;
     }
+     */
 
-    public List<InventoryReport> generateInventoryReport() {
+   /* public List<InventoryReport> generateInventoryReport() {
         List<InventoryReport> inventoryReports = new ArrayList<>();
         String sql = "SELECT product_id, quantity " +
                 "FROM inventory";
@@ -66,4 +67,6 @@ public class ReportDao {
     }
 
     // Additional report methods can be implemented here...
+
+    */
 }

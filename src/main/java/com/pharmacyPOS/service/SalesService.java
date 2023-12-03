@@ -37,6 +37,11 @@ public class SalesService {
         this.salesDao=saleDao;
     }
 
+    public String getProductNameById(int productId)
+    {
+        return (salesDao.getProductNameById(productId));
+    }
+
     /**
      * Processes a sales transaction.
      *

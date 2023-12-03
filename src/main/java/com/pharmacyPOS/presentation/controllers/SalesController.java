@@ -18,11 +18,13 @@ public class SalesController {
         return salesService.getAllSales();
     }
 
-    public String getProductNameById(int productId) {
+    /*public String getProductNameById(int productId) {
         // Assuming salesService has a method to get a product by ID.
         Product product = salesService.getProductById(productId);
         return product != null ? product.getName() : "Product not found";
     }
+
+     */
 
     public void displayAllSales() {
         List<Sale> sales = salesService.getAllSales();
@@ -50,5 +52,10 @@ public class SalesController {
                     ", Name: " + product.getName() +
                     ", Price: " + product.getPrice() );
         });
+    }
+
+    public String getProductNameById(int productId)
+    {
+        return (salesService.getProductNameById(productId));
     }
 }
