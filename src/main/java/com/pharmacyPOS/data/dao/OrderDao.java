@@ -17,7 +17,7 @@ public class OrderDao {
         this.databaseConnection = databaseConnection;
     }
 
-    public Order getOrderById(int orderId) {
+    /*public Order getOrderById(int orderId) {
         String sql = "SELECT * FROM orders WHERE order_id = ?";
         try (Connection conn = databaseConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -37,6 +37,56 @@ public class OrderDao {
         }
         return null;
     }
+     */
+
+    public Order getOrderById(int orderId) {
+        String sql = "SELECT * FROM orders WHERE order_id = ?";
+        Order order = null;
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, orderId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                order = new Order(
+                        rs.getInt("order_id"),
+                        rs.getInt("user_id"),
+                        rs.getTimestamp("timestamp")
+                );
+                List<OrderDetail> detailsList = getOrderDetails(orderId);
+                OrderDetail[] detailsArray = new OrderDetail[detailsList.size()];
+                detailsArray = detailsList.toArray(detailsArray); // Convert list to array
+                order.setOrderDetails(detailsArray); // Set order details as an array
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return order;
+    }
+
+    private List<OrderDetail> getOrderDetails(int orderId) {
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        String detailSql = "SELECT * FROM order_details WHERE order_id = ?";
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(detailSql)) {
+
+            pstmt.setInt(1, orderId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                OrderDetail detail = new OrderDetail(
+                        // Assuming constructor or setters for OrderDetail fields
+                        rs.getInt("product_id"),
+                        rs.getInt("quantity_ordered"),
+                        rs.getDouble("price_at_time_of_sale")
+                );
+                orderDetails.add(detail);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orderDetails;
+    }
+
 
     public List<Order> getAllOrders() {
         List<Order> orders = new ArrayList<>();

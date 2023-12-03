@@ -89,7 +89,7 @@ public class OrderProcessingFrame extends JFrame {
                 String salesAssistantName = "Your Assistant Name"; // Replace with actual assistant name
 
                 // Create the POSReceipt frame
-               // new POSReceipt(order, totalAmount, amountPaid);
+                new POSReceipt(order, totalAmount, amountPaid);
             } else {
                 JOptionPane.showMessageDialog(this, "Amount paid is less than the total amount", "Error", JOptionPane.ERROR_MESSAGE);
             }

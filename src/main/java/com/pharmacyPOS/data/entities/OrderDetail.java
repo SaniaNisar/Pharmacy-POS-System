@@ -20,6 +20,12 @@ public class OrderDetail {
         this.unitPrice = unitPrice;
     }
 
+    public OrderDetail(int productId, int quantity, double unitPrice) {
+        this.productId = productId;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+    }
+
     public OrderDetail(int cartId, int productId, int quantity, double price) {
     }
 
