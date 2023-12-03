@@ -25,4 +25,9 @@ public class OrderDetailController {
         // Add any additional logic or response handling if needed
     }
 
+    public List<OrderDetail> getAllOrderDetails() {
+        return orderDetailService.getAllOrderDetails();
+        // Add any additional logic or response handling if needed
+    }
+
 }
