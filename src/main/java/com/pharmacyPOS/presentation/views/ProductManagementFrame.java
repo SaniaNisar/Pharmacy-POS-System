@@ -18,6 +18,10 @@ public class ProductManagementFrame {
     private JFrame frame;
     private JTable productTable;
     private DefaultTableModel tableModel;
+    JButton addButton ;
+    JButton deleteButton;
+    JButton editButton ;
+    JButton refreshButton ;
 
     public ProductManagementFrame(ProductService productService) {
         this.productService = productService;
@@ -42,10 +46,10 @@ public class ProductManagementFrame {
         frame.add(scrollPane, BorderLayout.CENTER);
 
         // Create buttons for add, delete, and edit
-        JButton addButton = new JButton("Add");
-        JButton deleteButton = new JButton("Delete");
-        JButton editButton = new JButton("Edit");
-        JButton refreshButton = new JButton("Refresh");
+         addButton = new JButton("Add");
+         deleteButton = new JButton("Delete");
+         editButton = new JButton("Edit");
+         refreshButton = new JButton("Refresh");
 
         // Create a panel for buttons
         JPanel buttonPanel = new JPanel();
@@ -144,6 +148,30 @@ public class ProductManagementFrame {
         ProductDao productDao = new ProductDao(conn);
         ProductService productService = new ProductService(productDao);
         new ProductManagementFrame(productService);
+    }
+
+    public JTable getProductTable() {
+        return productTable;
+    }
+
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    public JButton getAddButton() {
+        return addButton;
+    }
+
+    public JButton getDeleteButton() {
+        return deleteButton;
+    }
+
+    public JButton getEditButton() {
+        return editButton;
+    }
+
+    public JButton getRefreshButton() {
+        return refreshButton;
     }
 }
 
