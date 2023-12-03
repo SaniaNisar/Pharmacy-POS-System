@@ -49,14 +49,16 @@ public class SalesAssistantDashboard extends JFrame {
         transactionsMenu.add(manageCartItem);
 
         // Menu item "Invoice and Payment"
-        JMenuItem invoicePaymentItem = new JMenuItem("Invoice and Payment");
-        invoicePaymentItem.addActionListener(new ActionListener() {
+        //JMenuItem invoicePaymentItem = new JMenuItem("Invoice and Payment");
+       /* invoicePaymentItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Code to handle invoicing and payment
             }
         });
         transactionsMenu.add(invoicePaymentItem);
+
+        */
 
         JMenu cartMenu = new JMenu("Cart");
         JMenuItem viewCart = new JMenuItem("View Cart");
@@ -106,8 +108,8 @@ public class SalesAssistantDashboard extends JFrame {
         // Create a main panel
         JButton searchInventoryButton = new JButton("Search Inventory");
         JButton manageCartButton = new JButton("Manage Cart");
-        JButton invoicePaymentButton = new JButton("Invoice and Payment");
-        JPanel mainPanel = new JPanel(new GridLayout(3, 1, 10, 10)); // Example layout
+       // JButton invoicePaymentButton = new JButton("Invoice and Payment");
+        JPanel mainPanel = new JPanel(new GridLayout(2, 1, 10, 10)); // Example layout
 
         searchInventoryButton.addActionListener(new ActionListener() {
             @Override
@@ -123,16 +125,9 @@ public class SalesAssistantDashboard extends JFrame {
             }
         });
 
-        invoicePaymentButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code to handle opening the invoice and payment page
-            }
-        });
-
         mainPanel.add(searchInventoryButton);
         mainPanel.add(manageCartButton);
-        mainPanel.add(invoicePaymentButton);
+        //mainPanel.add(invoicePaymentButton);
         add(mainPanel, BorderLayout.CENTER);
 
         // Display the frame
