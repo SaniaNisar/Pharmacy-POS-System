@@ -56,5 +56,19 @@ public class OrderDetailDao {
     }
 
     public List<OrderDetail> getAllOrderDetails() {
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        String sql = "SELECT * FROM order_details";
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                OrderDetail orderDetail = extractOrderDetail(rs);
+                orderDetails.add(orderDetail);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return orderDetails;
     }
 }
