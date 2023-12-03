@@ -82,4 +82,24 @@ public class ProductCategoryFrameTest {
         }
         return null;
     }
+        @Test
+    public void testCategoryRadioButtonSelection() {
+        ProductCategoryFrame frame = new ProductCategoryFrame(mockDatabaseConnection);
+        ButtonGroup categoryButtonGroup = frame.getCategoryButtonGroup();
+
+        // Find the specific radio button for a category
+        Enumeration<AbstractButton> buttons = categoryButtonGroup.getElements();
+        while (buttons.hasMoreElements()) {
+            AbstractButton button = buttons.nextElement();
+            if ("Category1".equals(button.getText())) {
+                button.doClick(); // Simulate click
+                break;
+            }
+        }
+
+        // Now check if the product table is updated correctly
+        JTable productTable = frame.getProductTable();
+        DefaultTableModel model = (DefaultTableModel) productTable.getModel();
+        assertEquals("Expected number of rows after selection", 2, model.getRowCount());
+    }
 }
