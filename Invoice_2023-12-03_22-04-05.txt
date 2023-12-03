@@ -1,0 +1,12 @@
+Pharmacy POS Receipt
+----------------------------
+Order ID: 1
+Date: 2023-12-03 22:04:05
+Sales Assistant
+
+Items:
+Product id: 1, Quantity: 5, Price: $10.00
+
+Total Amount: $50.00
+Paid Amount: $200.00
+Change: $150.00
