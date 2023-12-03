@@ -54,4 +54,7 @@ public class OrderDetailDao {
                 rs.getDouble("unit_price")
         );
     }
+
+    public List<OrderDetail> getAllOrderDetails() {
+    }
 }
