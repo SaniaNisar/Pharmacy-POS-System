@@ -34,7 +34,6 @@ public class OrderProcessingFrame extends JFrame {
         cancelOrderButton.setPreferredSize(new Dimension(150, 30));
         generateInvoiceButton.setPreferredSize(new Dimension(150, 30));
 
-        // Add components
         add(new JLabel("Total Amount:"));
         add(totalAmountLabel);
         add(new JLabel("Amount Paid:"));
