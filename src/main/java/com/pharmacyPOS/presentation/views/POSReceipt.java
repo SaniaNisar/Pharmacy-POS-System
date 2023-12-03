@@ -20,6 +20,7 @@ public class POSReceipt extends JFrame {
     private double paidAmount;
     private double total;
     private SalesDao salesDao;
+    private JTextArea receiptArea;
 
     public POSReceipt(Order order, double total, double paidAmount) {
         this.order = order;
@@ -39,7 +40,7 @@ public class POSReceipt extends JFrame {
         setSize(300, 600);
         setLayout(new BorderLayout());
 
-        JTextArea receiptArea = new JTextArea();
+         receiptArea = new JTextArea();
         receiptArea.setEditable(false);
         receiptArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
 
@@ -95,5 +96,9 @@ public class POSReceipt extends JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error saving sale to database", "Database Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public JTextArea getFrame() {
+        return receiptArea;
     }
 }
