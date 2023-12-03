@@ -150,3 +150,36 @@ ALTER TABLE carts
     ADD CONSTRAINT fk_carts_user
         FOREIGN KEY (user_id) REFERENCES users(user_id)
             ON DELETE CASCADE ON UPDATE CASCADE;
+
+CREATE TABLE IF NOT EXISTS sales (
+                                     sale_id INT AUTO_INCREMENT PRIMARY KEY,
+                                     sale_date DATE,
+                                     total_cost DECIMAL(10, 2) NOT NULL
+    );
+
+CREATE TABLE IF NOT EXISTS sale_items (
+                                          sale_item_id INT AUTO_INCREMENT PRIMARY KEY,
+                                          sale_id INT,
+                                          product_id INT,
+                                          quantity INT NOT NULL,
+                                          price DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (sale_id) REFERENCES sales(sale_id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(product_id) ON DELETE CASCADE
+    );
+
+
+ALTER TABLE sale_items
+DROP FOREIGN KEY fk_saleitems_sale;
+
+ALTER TABLE sale_items
+    ADD CONSTRAINT fk_saleitems_sale
+        FOREIGN KEY (sale_id) REFERENCES sales(sale_id)
+            ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE sale_items
+DROP FOREIGN KEY fk_saleitems_productid;
+
+ALTER TABLE sale_items
+    ADD CONSTRAINT fk_saleitems_productid
+        FOREIGN KEY (product_id) REFERENCES products(product_id)
+            ON DELETE CASCADE ON UPDATE CASCADE;
