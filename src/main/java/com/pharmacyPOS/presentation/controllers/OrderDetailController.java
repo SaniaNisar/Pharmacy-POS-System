@@ -1,4 +1,4 @@
-package com.pharmacyPOS.controllers;
+package com.pharmacyPOS.presentation.controllers;
 
 import com.pharmacyPOS.data.entities.OrderDetail;
 import com.pharmacyPOS.services.OrderDetailService;
