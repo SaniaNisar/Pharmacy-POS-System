@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 class ProductTableFrame extends JFrame {
+    JTable productTable;
     public ProductTableFrame(List<String> products)
     {
         setTitle("Product Table");
@@ -14,7 +15,7 @@ class ProductTableFrame extends JFrame {
         DefaultTableModel productTableModel = new DefaultTableModel();
         productTableModel.addColumn("Product Name");
 
-        JTable productTable = new JTable(productTableModel);
+        productTable = new JTable(productTableModel);
         JScrollPane tableScrollPane = new JScrollPane(productTable);
 
         for (String productName : products) {
@@ -24,4 +25,8 @@ class ProductTableFrame extends JFrame {
         getContentPane().add(tableScrollPane);
         setVisible(true);
     }
-}
+
+    public JTable getProductTable() {
+            return productTable;
+        }
+    }
