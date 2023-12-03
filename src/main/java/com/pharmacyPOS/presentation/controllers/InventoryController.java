@@ -3,6 +3,7 @@ package com.pharmacyPOS.presentation.controllers;
 import com.pharmacyPOS.data.dao.InventoryDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.Inventory;
+import com.pharmacyPOS.data.entities.Product;
 import com.pharmacyPOS.service.InventoryService;
 import java.util.List;
 
@@ -44,6 +45,10 @@ public class InventoryController {
         }
     }
 
+    public Inventory getInventoryById(int inventoryId) {
+        return inventoryService.getInventoryById(inventoryId);
+    }
+
     public boolean addInventoryItem(Inventory inventory) {
         try {
             inventoryDao.createInventoryItem(inventory);
@@ -53,6 +58,11 @@ public class InventoryController {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public void updateInventoryItemWithProductInfo(Inventory inventory, Product product)
+    {
+        inventoryService.updateInventoryItemWithProductInfo(inventory,product);
     }
 
     public boolean updateInventoryItem(Inventory inventory) {

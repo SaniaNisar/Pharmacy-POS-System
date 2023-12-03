@@ -56,6 +56,10 @@ public class InventoryService {
         return item.getQuantity() <= item.getLowStockThreshold();
     }
 
+    public Inventory getInventoryById(int inventoryId) {
+        return inventoryDao.getInventoryById(inventoryId);
+    }
+
     public List<Product> checkAndAlertLowStock() {
         List<Inventory> allInventory = getAllInventory();
         List<Product> lowStockProducts = new ArrayList<>();
@@ -97,4 +101,7 @@ public class InventoryService {
     }
 
 
+    public void updateInventoryItemWithProductInfo(Inventory inventory, Product product) {
+        inventoryDao.updateInventoryItemWithProductInfo(inventory,product);
+    }
 }

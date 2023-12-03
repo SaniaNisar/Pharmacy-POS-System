@@ -5,6 +5,7 @@ import com.pharmacyPOS.data.dao.ProductDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.Inventory;
 import com.pharmacyPOS.data.entities.Product;
+import com.pharmacyPOS.presentation.controllers.ProductController;
 import com.pharmacyPOS.presentation.controllers.ReplenishmentController;
 import com.pharmacyPOS.service.ProductService;
 import com.pharmacyPOS.service.ReplenishmentService;
@@ -54,7 +55,8 @@ public class InventoryManagementPage extends JFrame {
         deleteButton.addActionListener(this::onDeleteStockClicked);
 
         JButton refreshButton = new JButton("Refresh Inventory");
-        refreshButton.addActionListener(new ActionListener() {
+        refreshButton.addActionListener(new ActionListener()
+        {
             @Override
             public void actionPerformed(ActionEvent e) {
                 loadInventoryItems();
@@ -94,8 +96,24 @@ public class InventoryManagementPage extends JFrame {
     }
 
     private void onUpdateStockClicked(ActionEvent e) {
-        // Implementation for updating selected stock
+        int selectedRow = inventoryTable.getSelectedRow();
+        if (selectedRow >= 0) {
+            int inventoryId = (int) tableModel.getValueAt(selectedRow, 0);
+            Inventory inventory = inventoryDao.getInventoryById(inventoryId);
+
+            // Retrieve the associated product
+            Product product = productService.getProductById(inventory.getProductId());
+
+            if (inventory != null && product != null) {
+                UpdateInventoryFrame updateFrame = new UpdateInventoryFrame(inventory, inventoryDao, product);
+                updateFrame.setVisible(true);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select an inventory item to update", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
     }
+
+
 
     private void onDeleteStockClicked(ActionEvent e) {
         int selectedRow = inventoryTable.getSelectedRow();
