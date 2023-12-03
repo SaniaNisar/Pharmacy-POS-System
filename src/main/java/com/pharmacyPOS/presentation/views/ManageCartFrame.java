@@ -286,7 +286,6 @@ public class ManageCartFrame extends JFrame {
         refreshTotalAmount();
     }
 
-
     private void refreshCartDisplay() {
         // Implement logic to reload cart items and refresh the total amount
         loadCartItems();
