@@ -2,6 +2,7 @@ package com.pharmacyPOS.presentation.views;
 
 import com.pharmacyPOS.data.dao.InventoryDao;
 import com.pharmacyPOS.data.dao.ProductDao;
+import com.pharmacyPOS.data.dao.SalesDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.InventoryChartFrame;
 import com.pharmacyPOS.data.entities.InventoryReportGenerator;
@@ -131,7 +132,7 @@ public class ManagerDashboard extends JFrame {
         salesReportItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code to generate sales report
+                new SalesReportsFrame(new SalesDao(conn));
             }
         });
         JMenuItem inventoryReportItem = new JMenuItem("Inventory Report");

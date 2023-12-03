@@ -1,6 +1,7 @@
 package com.pharmacyPOS.presentation.views;
 
 import com.pharmacyPOS.data.dao.InventoryDao;
+import com.pharmacyPOS.data.dao.SalesDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.InventoryChartFrame;
 import com.pharmacyPOS.data.entities.InventoryReportGenerator;
@@ -33,7 +34,7 @@ public class MainReportsPage extends JFrame {
         salesReportButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Code to generate and display sales report
+                new SalesReportsFrame(new SalesDao(conn));
             }
         });
 
