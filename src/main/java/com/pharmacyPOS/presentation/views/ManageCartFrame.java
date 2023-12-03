@@ -437,13 +437,13 @@ public class ManageCartFrame extends JFrame {
     private void onProcessOrderClicked(ActionEvent actionEvent) {
         try {
             Cart currentCart = cartController.getCurrentCart(userId);
-            if (currentCart != null && !currentCart.getItems().isEmpty()) {
+            if (currentCart != null && !currentCart.getItems().isEmpty())
+            {
                 double totalAmount = cartController.getCartTotal(userId);
-
-                // Confirm with the user to process the order
                 int confirm = JOptionPane.showConfirmDialog(this, "Confirm to process the order worth " + String.format("%.2f", totalAmount), "Confirm Order", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     processOrder(currentCart);
+                    new OrderProcessingFrame(totalAmount);
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Cart is empty.", "No items to process", JOptionPane.ERROR_MESSAGE);
@@ -458,7 +458,6 @@ public class ManageCartFrame extends JFrame {
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (SaleItem item : cart.getItems())
         {
-            // Assuming CartItem has the same or similar fields as SaleItem
             OrderDetail detail = new OrderDetail(0, 0, item.getProductId(), item.getQuantity(), item.getPrice());
             orderDetails.add(detail);
         }
@@ -468,7 +467,6 @@ public class ManageCartFrame extends JFrame {
 
         orderDao.saveOrder(order);
 
-        // Clear the cart after processing the order
         cartController.clearCart(cart.getCartId());
 
         JOptionPane.showMessageDialog(this, "Order processed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -482,14 +480,10 @@ public class ManageCartFrame extends JFrame {
             int currentQuantity = (int) cartTableModel.getValueAt(row, 2);
 
             if (currentQuantity > 1) {
-                // Decrement quantity by 1 in the table model
                 cartTableModel.setValueAt(currentQuantity - 1, row, 2);
-                // Update quantity in the database
                 cartController.updateCartItemQuantity(cartId, productId, currentQuantity - 1);
             } else {
-                // Remove row from the table model
                 cartTableModel.removeRow(row);
-                // Remove item from the cart in the database
                 cartController.removeItemFromCart(cartId, productId);
             }
 
