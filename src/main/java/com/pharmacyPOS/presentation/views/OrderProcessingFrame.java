@@ -1,9 +1,15 @@
 package com.pharmacyPOS.presentation.views;
 
+import com.pharmacyPOS.data.dao.OrderDao;
+import com.pharmacyPOS.data.database.DatabaseConnection;
+import com.pharmacyPOS.data.entities.Order;
+import com.pharmacyPOS.presentation.controllers.OrderController;
+//import com.pharmacyPOS.presentation.views.POSReceipt;
+import com.pharmacyPOS.service.OrderService;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class OrderProcessingFrame extends JFrame {
     private JLabel totalAmountLabel;
@@ -12,9 +18,16 @@ public class OrderProcessingFrame extends JFrame {
     private JButton cancelOrderButton;
     private JButton generateInvoiceButton;
     private double totalAmount;
+    private OrderController orderController;
+    private DatabaseConnection connection;
+    private int orderId;
 
-    public OrderProcessingFrame(double totalAmount) {
+    public OrderProcessingFrame(double totalAmount, int orderID) {
         this.totalAmount = totalAmount;
+        connection = new DatabaseConnection();
+        connection.connect();
+        orderController = new OrderController(new OrderService(new OrderDao(connection)));
+        this.orderId = orderID;
         initComponents();
     }
 
@@ -45,10 +58,10 @@ public class OrderProcessingFrame extends JFrame {
 
         // Action Listeners
         generateInvoiceButton.addActionListener(this::calculateChange);
+        generateInvoiceButton.addActionListener(e -> generateInvoice());
         cancelOrderButton.addActionListener(e -> dispose()); // Close the frame
 
-        //pack();
-        setSize(400,400);
+        setSize(400, 400);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -62,15 +75,31 @@ public class OrderProcessingFrame extends JFrame {
             }
             double amountToReturn = amountPaid - totalAmount;
             amountToBeReturnedLabel.setText("Amount to be returned: $" + String.format("%.2f", amountToReturn));
-            JOptionPane.showMessageDialog(this, "Invoice generated successfully!", "Invoice", JOptionPane.INFORMATION_MESSAGE);
-
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Please enter a valid amount", "Invalid Input", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    private void generateInvoice() {
+        try {
+            double amountPaid = Double.parseDouble(amountPaidTextField.getText());
+            if (amountPaid >= totalAmount) {
+
+                Order order = orderController.getOrderById(orderId); // Placeholder for actual order object
+                String salesAssistantName = "Your Assistant Name"; // Replace with actual assistant name
+
+                // Create the POSReceipt frame
+               // new POSReceipt(order, totalAmount, amountPaid);
+            } else {
+                JOptionPane.showMessageDialog(this, "Amount paid is less than the total amount", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Invalid amount entered.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     // Main method for testing
     public static void main(String[] args) {
-        new OrderProcessingFrame(100.00); // Example total amount
+        new OrderProcessingFrame(48.00,4); // Example total amount
     }
 }

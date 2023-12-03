@@ -358,7 +358,7 @@ public class ManageCartFrame extends JFrame {
 
                     JOptionPane.showMessageDialog(paymentFrame, "Payment successful! Change: " + (amountPaid - totalAmount), "Payment", JOptionPane.INFORMATION_MESSAGE);
                     // invoice generation logic willl be added here
-                    new POSReceipt(order,totalAmount, amountPaid, "Sania");
+                    //new POSReceipt(order,totalAmount, amountPaid);
                     JOptionPane.showMessageDialog(this, "Invoice generated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                     paymentFrame.dispose(); // Close the payment frame
 
@@ -434,16 +434,18 @@ public class ManageCartFrame extends JFrame {
         return order;
     }
 
+    // ... [other parts of the ManageCartFrame class remain unchanged] ...
+
     private void onProcessOrderClicked(ActionEvent actionEvent) {
         try {
             Cart currentCart = cartController.getCurrentCart(userId);
-            if (currentCart != null && !currentCart.getItems().isEmpty())
-            {
+            if (currentCart != null && !currentCart.getItems().isEmpty()) {
                 double totalAmount = cartController.getCartTotal(userId);
                 int confirm = JOptionPane.showConfirmDialog(this, "Confirm to process the order worth " + String.format("%.2f", totalAmount), "Confirm Order", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
-                    processOrder(currentCart);
-                    new OrderProcessingFrame(totalAmount);
+                    Order processedOrder = processOrder(currentCart); // Process the order and get the order object
+                    int orderId = processedOrder.getOrderId(); // Retrieve the orderId from the order object
+                    new OrderProcessingFrame(totalAmount, orderId); // Pass the totalAmount and orderId to the OrderProcessingFrame
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Cart is empty.", "No items to process", JOptionPane.ERROR_MESSAGE);
@@ -454,10 +456,9 @@ public class ManageCartFrame extends JFrame {
         }
     }
 
-    private void processOrder(Cart cart) throws SQLException {
+    private Order processOrder(Cart cart) throws SQLException {
         List<OrderDetail> orderDetails = new ArrayList<>();
-        for (SaleItem item : cart.getItems())
-        {
+        for (SaleItem item : cart.getItems()) {
             OrderDetail detail = new OrderDetail(0, 0, item.getProductId(), item.getQuantity(), item.getPrice());
             orderDetails.add(detail);
         }
@@ -465,12 +466,16 @@ public class ManageCartFrame extends JFrame {
         Order order = new Order(0, userId, new Timestamp(System.currentTimeMillis()));
         order.setOrderDetails(orderDetails.toArray(new OrderDetail[0]));
 
-        orderDao.saveOrder(order);
+        orderDao.saveOrder(order); // Assuming saveOrder method returns the saved Order object with orderId
 
         cartController.clearCart(cart.getCartId());
 
         JOptionPane.showMessageDialog(this, "Order processed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        return order; // Return the processed order object
     }
+
+// ... [rest of the ManageCartFrame class remains unchanged] ...
+
 
     private void removeItemFromCart(int productId) {
         try {
