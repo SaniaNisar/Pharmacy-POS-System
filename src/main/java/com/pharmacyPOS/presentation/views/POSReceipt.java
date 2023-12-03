@@ -6,6 +6,7 @@ import com.pharmacyPOS.data.entities.Order;
 import com.pharmacyPOS.data.entities.OrderDetail;
 import com.pharmacyPOS.data.entities.Sale;
 import com.pharmacyPOS.data.entities.SaleItem;
+import com.pharmacyPOS.service.InvoiceGeneration;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,6 +29,9 @@ public class POSReceipt extends JFrame {
 
         setupUI();
         saveSaleToDatabase(); // Save the sale to the database
+        double change = paidAmount - total;
+        InvoiceGeneration invoiceGeneration = new InvoiceGeneration(order, total, paidAmount, change);
+        invoiceGeneration.generateInvoice();
     }
 
     private void setupUI() {
