@@ -53,14 +53,11 @@ public class MainReportsPage extends JFrame {
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new GridLayout(2, 1, 10, 10)); // 2 rows, 1 column, with 10-pixel gaps
 
-        // Add buttons to the panel
         buttonPanel.add(salesReportButton);
         buttonPanel.add(inventoryReportButton);
 
-        // Set layout manager for the main frame
         setLayout(new BorderLayout());
 
-        // Add the button panel to the center of the frame
         add(buttonPanel, BorderLayout.CENTER);
         setVisible(true);
 
