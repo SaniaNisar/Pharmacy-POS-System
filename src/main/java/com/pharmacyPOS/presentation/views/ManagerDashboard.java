@@ -30,18 +30,6 @@ public class ManagerDashboard extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
 
-        // Add menu "Inventory"
-       /* JMenu inventoryMenu = new JMenu("Inventory");
-        JMenuItem manageInventoryItem = new JMenuItem("Manage Inventory");
-        manageInventoryItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code to open inventory management
-            }
-        });
-        inventoryMenu.add(manageInventoryItem);
-        */
-
         JMenu inventoryMenu = new JMenu("Inventory");
 
         // Menu item "Manage Inventory"
