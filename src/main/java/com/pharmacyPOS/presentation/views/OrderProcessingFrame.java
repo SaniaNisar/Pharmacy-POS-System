@@ -131,4 +131,35 @@ public class OrderProcessingFrame extends JFrame {
     public static void main(String[] args) {
         new OrderProcessingFrame(48.00,4); // Example total amount
     }
+    public JLabel getTotalAmountLabel() {
+        return totalAmountLabel;
+    }
+
+    public JLabel getAmountToBeReturnedLabel() {
+        return amountToBeReturnedLabel;
+    }
+
+    public JButton getCancelOrderButton() {
+        return cancelOrderButton;
+    }
+
+    public JButton getGenerateInvoiceButton() {
+        return generateInvoiceButton;
+    }
+
+    public JTextField getAmountPaidTextField() {
+        return amountPaidTextField;
+    }
+
+    public void setAmountPaidTextField(String text) {
+        amountPaidTextField.setText(text);
+    }
+
+    public void setAmountToBeReturnedLabel(String text) {
+        amountToBeReturnedLabel.setText(text);
+    }
+
+    public void setOrderController(OrderController mockOrderController) {
+        this.orderController=orderController;
+    }
 }
