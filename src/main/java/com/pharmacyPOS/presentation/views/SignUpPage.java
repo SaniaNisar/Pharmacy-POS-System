@@ -77,7 +77,6 @@ public class SignUpPage extends JFrame {
         if (username.isEmpty()) {
             username = JOptionPane.showInputDialog(this, "Please enter a username: ");
             if (username == null || username.isEmpty()) {
-                // User cancelled or entered an empty string
                 return; // Stop the signUp process
             }
             usernameField.setText(username); // Set the text field with the entered value
@@ -88,7 +87,6 @@ public class SignUpPage extends JFrame {
         if (password.isEmpty()) {
             password = JOptionPane.showInputDialog(this, "Please enter a password: ");
             if (password == null || password.isEmpty()) {
-                // User cancelled or entered an empty string
                 return; // Stop the signUp process
             }
             passwordField.setText(password); // Set the password field with the entered value
