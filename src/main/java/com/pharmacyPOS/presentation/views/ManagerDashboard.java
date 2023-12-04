@@ -4,7 +4,6 @@ import com.pharmacyPOS.data.dao.InventoryDao;
 import com.pharmacyPOS.data.dao.ProductDao;
 import com.pharmacyPOS.data.dao.SalesDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
-import com.pharmacyPOS.data.entities.InventoryChartFrame;
 import com.pharmacyPOS.data.entities.InventoryReportGenerator;
 import com.pharmacyPOS.presentation.controllers.InventoryController;
 import com.pharmacyPOS.service.InventoryService;

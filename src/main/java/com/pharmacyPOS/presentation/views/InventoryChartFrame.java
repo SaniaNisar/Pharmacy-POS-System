@@ -1,7 +1,8 @@
-package com.pharmacyPOS.data.entities;
+package com.pharmacyPOS.presentation.views;
 
 import com.pharmacyPOS.data.dao.InventoryDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
+import com.pharmacyPOS.data.entities.Inventory;
 import com.pharmacyPOS.presentation.controllers.InventoryController;
 import com.pharmacyPOS.service.InventoryService;
 import org.jfree.chart.ChartFactory;
