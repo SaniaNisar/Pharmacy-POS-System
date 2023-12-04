@@ -16,20 +16,16 @@ public class WelcomePage extends JFrame {
     public WelcomePage(DatabaseConnection c) {
         conn = c;
 
-        // Set the frame properties
         setTitle("POS System");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Set the background color to sky blue
         getContentPane().setBackground(new Color(135, 206, 250)); // Sky blue
         //getContentPane().setBackground(new Color(0,0,139));
 
-        // Create components
         JLabel welcomeLabel = new JLabel("Welcome to the POS System");
         welcomeLabel.setForeground(new Color(0,0,139)); // Dark blue
-        //welcomeLabel.setForeground(Color.white);
         welcomeLabel.setFont(new Font("Times New Roman", Font.BOLD, 35));
         welcomeLabel.setBorder(new EmptyBorder(10, 10, 10, 10)); // Adding padding
 
@@ -46,14 +42,11 @@ public class WelcomePage extends JFrame {
         loginButton.setFocusPainted(false); // Remove the focus border
         loginButton.setPreferredSize(new Dimension(240, 30)); // Decreased width, increased height
 
-        // Center-align text
         welcomeLabel.setHorizontalAlignment(JLabel.CENTER);
 
-        // Add action listener to the login button
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Add your login logic here
                 LoginGUI login = new LoginGUI(conn);
             }
         });
@@ -65,15 +58,12 @@ public class WelcomePage extends JFrame {
             }
         });
 
-        // Set layout manager
         setLayout(new BorderLayout());
 
-        // Add components to the frame
         JPanel buttons = new JPanel();
         buttons.add(signUpButton);
         buttons.add(loginButton);
         add(welcomeLabel, BorderLayout.CENTER);
-       // add(signUpButton, BorderLayout.CENTER);
         add(buttons, BorderLayout.SOUTH);
         setVisible(true);
     }
