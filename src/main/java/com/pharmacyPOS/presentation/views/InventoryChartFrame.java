@@ -29,35 +29,28 @@ public class InventoryChartFrame extends JFrame {
     }
 
     private void initUI() {
-        // Create a panel to hold both the chart and report data
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        // Create the chart panel
         JFreeChart barChart = createChart();
         ChartPanel chartPanel = new ChartPanel(barChart);
         chartPanel.setPreferredSize(new Dimension(800, 300));
 
-        // Create a text area for the report data
         reportTextArea = new JTextArea();
         reportTextArea.setEditable(false);
         JScrollPane reportScrollPane = new JScrollPane(reportTextArea);
         reportScrollPane.setPreferredSize(new Dimension(800, 300));
 
-        // Add the chart panel and report text area to the main panel
         mainPanel.add(chartPanel, BorderLayout.NORTH);
         mainPanel.add(reportScrollPane, BorderLayout.SOUTH);
 
-        // Set the main panel as the content pane of the frame
         setContentPane(mainPanel);
     }
 
     private JFreeChart createChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        // Fetch inventory data from database and populate dataset
         List<Inventory> inventoryList = inventoryController.getInventoryList();
         for (Inventory inventory : inventoryList) {
-            // Assuming you have a method in InventoryDao to get product names
             String productName = inventoryController.getProductNameById(inventory.getProductId());
             dataset.addValue(inventory.getQuantity(), "Products", productName);
         }
@@ -74,7 +67,6 @@ public class InventoryChartFrame extends JFrame {
         );
     }
 
-    // Update the report text area with the inventory report
     public void updateReportTextArea(List<Inventory> inventoryList) {
         StringBuilder reportText = new StringBuilder();
         for (Inventory inventory : inventoryList) {
@@ -94,7 +86,6 @@ public class InventoryChartFrame extends JFrame {
         SwingUtilities.invokeLater(() -> {
             InventoryChartFrame frame = new InventoryChartFrame(inventoryController1);
 
-            // Fetch inventory data and update the report text area
             List<Inventory> inventoryList = inventoryController1.getInventoryList();
             frame.updateReportTextArea(inventoryList);
 
