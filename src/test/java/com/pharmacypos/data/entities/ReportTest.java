@@ -7,12 +7,9 @@ class ReportTest {
 
     @Test
     void display_ShouldNotThrowException() {
-        // Arrange
         Report report = new InventoryReport();
         Report report1 = new SalesReport();
-        // Act & Assert
         assertDoesNotThrow(() -> report.display());
     }
 
-    // Create additional test cases as needed for specific functionality
 }
