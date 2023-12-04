@@ -85,4 +85,24 @@ public class AddInventoryFrame extends JFrame {
         ReplenishmentService replenishmentService = new ReplenishmentService(new InventoryDao(conn),new ProductService(new ProductDao(conn)));
         new AddInventoryFrame(new ReplenishmentController(replenishmentService));
     }
+    
+    public JTextField getProductIdField() {
+        return productIdField;
+    }
+
+    public JTextField getQuantityField() {
+        return quantityField;
+    }
+
+    public JButton getAddButton() {
+        return addButton;
+    }
+
+    public JTextField getLowStockThresholdField() {
+        return lowStockThresholdField;
+    }
+
+    public JTextField getExpiryDateField() {
+        return expiryDateField;
+    }
 }
