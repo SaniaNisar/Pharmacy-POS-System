@@ -52,11 +52,7 @@ public class LowStockAlertFrame extends JFrame {
         mainPanel.removeAll();
 
         List<Product> lowStockProducts = inventoryService.checkAndAlertLowStock();
-        /*for(Product p : lowStockProducts)
-        {
-            System.out.println(p.);
-        }
-         */
+
         if (lowStockProducts.isEmpty())
         {
             mainPanel.add(new JLabel("No low stock items found."));
@@ -79,13 +75,10 @@ public class LowStockAlertFrame extends JFrame {
     }
 
     private void initiateReorder(Product product) {
-        // Placeholder for reorder logic
         JOptionPane.showMessageDialog(this, "Reorder initiated for: " + product.getName());
-        // Here you would add the logic to reorder the product
     }
 
     public static void main(String[] args) {
-        // Mock Services for demonstration
         DatabaseConnection conn = new DatabaseConnection();
         conn.connect();
         ProductService productService = new ProductService(new ProductDao(conn)); // Replace with actual implementation

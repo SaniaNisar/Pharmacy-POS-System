@@ -135,5 +135,4 @@ public class InventoryManagementPage extends JFrame {
         new InventoryManagementPage(dbConnection);
     }
 
-    // ... existing main method ...
 }
