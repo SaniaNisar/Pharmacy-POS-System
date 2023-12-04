@@ -30,10 +30,6 @@ public class CartService {
         return cartDao.getCartById(cartId);
     }
 
-    // Update a Cart (This could be to add or remove items from the cart)
-    public void updateCart(Cart cart) throws SQLException {
-        cartDao.updateCart(cart);
-    }
 
     // Delete a Cart by ID
     public void deleteCart(int cartId) throws SQLException {

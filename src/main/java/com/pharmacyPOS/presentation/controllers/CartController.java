@@ -45,22 +45,14 @@ public class CartController {
         return cartService.getCartById(cartId);
     }
 
-    // Update a Cart (This could be to add or remove items from the cart)
-    public void updateCart(Cart cart) throws SQLException {
-        cartService.updateCart(cart);
-    }
-
-    // Delete a Cart by ID
     public void deleteCart(int cartId) throws SQLException {
         cartService.deleteCart(cartId);
     }
 
-    // Helper method to add an item to a cart
     public void addItemToCart(int cartId, SaleItem item) throws SQLException {
         cartService.addItemToCart(cartId, item);
     }
 
-    // Helper method to remove an item from a cart
     public void removeItemFromCart(int cartId, int productId) throws SQLException {
         cartService.removeItemFromCart(cartId, productId);
     }
@@ -75,7 +67,7 @@ public class CartController {
     }
     public double getCartTotal(int userId) {
         try {
-            Cart cart = getCurrentCart(userId); // Assuming you have a method to get the current Cart
+            Cart cart = getCurrentCart(userId);
             if (cart != null) {
                 return cart.getTotal();
             } else {

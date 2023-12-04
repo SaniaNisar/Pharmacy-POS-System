@@ -19,7 +19,6 @@ public class CartDao {
         this.dbConnection = dbConnection;
     }
 
-    // Create a new Cart with user_id
     public int createCart(Cart cart) throws SQLException {
         String sql = "INSERT INTO carts (user_id) VALUES (?)";
         try (Connection conn = dbConnection.connect();
@@ -42,7 +41,6 @@ public class CartDao {
         }
     }
 
-    // Read a Cart by ID
     public Cart getCartById(int cartId) throws SQLException {
         String sql = "SELECT * FROM cart_items WHERE cart_id = ?";
         try (Connection conn = dbConnection.connect();
@@ -52,7 +50,7 @@ public class CartDao {
             ResultSet rs = pstmt.executeQuery();
 
             Cart cart = new Cart();
-            cart.setCartId(cartId); // Set the cartId of the Cart object
+            cart.setCartId(cartId);
             while (rs.next()) {
                 SaleItem item = new SaleItem(
                         rs.getInt("product_id"),
@@ -63,12 +61,6 @@ public class CartDao {
             }
             return cart;
         }
-    }
-
-    // Update a Cart
-    public void updateCart(Cart cart) throws SQLException {
-        // This method should be implemented based on how you want to update the cart
-        // It might involve updating the quantity of items, removing items, etc.
     }
 
     // Helper method to remove an item from a cart
