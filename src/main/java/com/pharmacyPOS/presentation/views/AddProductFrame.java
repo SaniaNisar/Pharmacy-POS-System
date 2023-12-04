@@ -126,4 +126,31 @@ public class AddProductFrame extends JFrame {
         row.add(textField);
         return row;
     }
+    public JTextField getNameTextField() {
+        return nameTextField;
+    }
+
+    public JTextField getDescriptionTextField() {
+        return descriptionTextField;
+    }
+
+    public JTextField getPriceTextField() {
+        return priceTextField;
+    }
+
+    public JTextField getCategoryIdTextField() {
+        return categoryIdTextField;
+    }
+
+    public JTextField getExpirationDateTextField() {
+        return expirationDateTextField;
+    }
+
+    public JTextField getQuantityTextField() {
+        return quantityTextField;
+    }
+
+    public JButton getAddButton() {
+        return addButton;
+    }
 }
