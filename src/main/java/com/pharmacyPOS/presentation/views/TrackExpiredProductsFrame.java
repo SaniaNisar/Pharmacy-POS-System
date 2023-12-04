@@ -53,8 +53,6 @@ public class TrackExpiredProductsFrame extends JFrame {
         // Add a custom cell renderer for the Remove button
         productsTable.getColumn("Action").setCellRenderer(new ButtonRenderer());
 
-        // Add a custom cell editor for the Remove button
-        // Set custom cell renderers and editors for the "Remove" button
         productsTable.getColumn("Action").setCellEditor(new ButtonEditor(new JCheckBox(), productsTable));
 
         //productsTable.getColumn("Action").setCellEditor(new ButtonEditor(new JCheckBox()));
