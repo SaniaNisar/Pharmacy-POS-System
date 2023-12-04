@@ -223,9 +223,7 @@ public class SearchInventoryFrame extends JFrame {
                 SaleItem newItem = new SaleItem(Integer.parseInt(productId), 1, price);
 
                 try {
-                    // Add the item to the currentCart object
                     currentCart.addItem(newItem);
-                    // Persist the new item in the cart to the database
                     cartController.addItemToCart(currentCart.getCartId(), newItem);
                     JOptionPane.showMessageDialog(this, "Added to cart: " + productName);
                 } catch (SQLException sqlException) {
