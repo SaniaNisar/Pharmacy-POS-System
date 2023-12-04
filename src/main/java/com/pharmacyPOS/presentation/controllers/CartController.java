@@ -18,7 +18,6 @@ public class CartController {
     private CartService cartService;
     private ProductService productService; // Assuming you have a ProductService
 
-    // Constructor
     public CartController(CartService cartService, ProductService productService) {
         this.cartService = cartService;
         DatabaseConnection connection = new DatabaseConnection();
@@ -31,7 +30,6 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    // Create a new Cart
     public int createCart(Cart cart) throws SQLException {
         return cartService.createCart(cart);
     }
@@ -40,7 +38,6 @@ public class CartController {
         cartService.updateCartItemQuantity(cartId, productId, newQuantity);
     }
 
-    // Read a Cart by ID
     public Cart getCartById(int cartId) throws SQLException {
         return cartService.getCartById(cartId);
     }
@@ -80,19 +77,6 @@ public class CartController {
         return 0.0;
     }
     private InventoryDao inventoryDao;
-    public void decrementInventory(int productId, int quantity) throws SQLException {
-        // Retrieve current inventory for the product
-        DatabaseConnection conn = new DatabaseConnection();
-        conn.connect();
-        inventoryDao = new InventoryDao(conn);
-        Inventory inventory = inventoryDao.getInventoryByProductId(productId);
-        if (inventory != null && inventory.getQuantity() >= quantity) {
-            inventory.setQuantity(inventory.getQuantity() - quantity);
-            inventoryDao.updateInventoryItem(inventory);
-        } else {
-            throw new SQLException("Insufficient inventory for product ID: " + productId);
-        }
-    }
 
     public int getCartItemQuantity(int cartId, int productId) throws SQLException
     {
