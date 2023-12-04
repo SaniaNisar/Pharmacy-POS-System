@@ -84,6 +84,18 @@ public class ProductCategoryFrame {
         frame.setVisible(true);
     }
 
+    public JFrame getFrame() {
+        return frame;
+    }
+
+    public JTable getProductTable() {
+        return productTable;
+    }
+
+    public ButtonGroup getCategoryButtonGroup() {
+        return categoryButtonGroup;
+    }
+
     private class CategoryRadioButtonListener implements ActionListener {
         private final String category;
 
