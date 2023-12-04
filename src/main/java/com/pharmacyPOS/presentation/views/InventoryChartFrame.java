@@ -84,7 +84,8 @@ public class InventoryChartFrame extends JFrame {
         reportTextArea.setText(reportText.toString());
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         DatabaseConnection dbConnection = new DatabaseConnection();
         dbConnection.connect();
         InventoryDao inventoryDao = new InventoryDao(dbConnection);
