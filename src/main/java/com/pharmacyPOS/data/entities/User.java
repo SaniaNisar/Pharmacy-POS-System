@@ -18,6 +18,11 @@ public class User {
         this.role = role;
     }
 
+    public User(String newuser, String hashedpassword, String user)
+    {
+
+    }
+
     // Getters and Setters
     public int getUserId() {
         return userId;

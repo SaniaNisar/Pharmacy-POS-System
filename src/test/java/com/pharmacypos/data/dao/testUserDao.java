@@ -50,7 +50,7 @@ public class testUserDao {
 
     @Test
     public void testCreateUser() {
-        User user = new User("newuser", "hashedpassword", "user");
+        User user = new User(34,"newuser", "hashedpassword", "user");
         userDao.createUser(user);
         assertTrue(user.getUserId() > 0);
     }

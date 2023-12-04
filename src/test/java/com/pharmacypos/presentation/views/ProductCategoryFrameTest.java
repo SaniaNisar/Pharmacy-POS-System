@@ -11,14 +11,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import java.util.Date;
+
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

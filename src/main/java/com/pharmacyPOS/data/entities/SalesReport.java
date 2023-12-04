@@ -18,6 +18,10 @@ public class SalesReport extends Report {
         this.saleDate = saleDate; // Initialize the sale date
     }
 
+    public SalesReport() {
+
+    }
+
 
     public int getProductId() {
         return productId;

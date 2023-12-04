@@ -28,7 +28,7 @@ public class InventoryChartFrame extends JFrame {
         pack();
     }
 
-    private void initUI() {
+    void initUI() {
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         JFreeChart barChart = createChart();
@@ -46,7 +46,7 @@ public class InventoryChartFrame extends JFrame {
         setContentPane(mainPanel);
     }
 
-    private JFreeChart createChart() {
+    JFreeChart createChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         List<Inventory> inventoryList = inventoryController.getInventoryList();

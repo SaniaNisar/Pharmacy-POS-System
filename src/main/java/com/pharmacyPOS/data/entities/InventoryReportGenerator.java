@@ -63,7 +63,7 @@ public class InventoryReportGenerator {
         }
     }
 
-    private String createFileNameWithCurrentDate() {
+    String createFileNameWithCurrentDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String currentDate = sdf.format(new Date());
         return "InventoryReport - " + currentDate + ".txt";
