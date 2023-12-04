@@ -315,6 +315,7 @@ public class ManageCartFrame extends JFrame {
     private void onRefreshButtonClicked(ActionEvent actionEvent) {
         // Call the loadCartItems method to refresh the cart
         loadCartItems();
+        clearButton.setEnabled(true);
     }
 
     // Main method for demonstration purposes
