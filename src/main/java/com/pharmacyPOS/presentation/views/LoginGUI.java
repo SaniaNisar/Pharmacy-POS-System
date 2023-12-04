@@ -68,7 +68,6 @@ public class LoginGUI {
                 boolean isValidUser = validateUser(user, password, role);
 
                 if (isValidUser) {
-                    // User is valid, perform login actions
                     System.out.println("Login successful for " + user + " as " + role);
                     frame.dispose(); // Close the login window
 
@@ -89,7 +88,6 @@ public class LoginGUI {
                 } else {
                     // Invalid user, display an error message or take appropriate action
                     System.out.println("Invalid login attempt for " + user + " as " + role);
-                    // You can show an error message dialog
                     JOptionPane.showMessageDialog(null, "Invalid login credentials", "Login Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
