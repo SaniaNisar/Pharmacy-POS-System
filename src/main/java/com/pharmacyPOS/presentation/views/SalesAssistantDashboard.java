@@ -48,18 +48,6 @@ public class SalesAssistantDashboard extends JFrame {
         });
         transactionsMenu.add(manageCartItem);
 
-        // Menu item "Invoice and Payment"
-        //JMenuItem invoicePaymentItem = new JMenuItem("Invoice and Payment");
-       /* invoicePaymentItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Code to handle invoicing and payment
-            }
-        });
-        transactionsMenu.add(invoicePaymentItem);
-
-        */
-
         JMenu cartMenu = new JMenu("Cart");
         JMenuItem viewCart = new JMenuItem("View Cart");
         viewCart.addActionListener(new ActionListener() {

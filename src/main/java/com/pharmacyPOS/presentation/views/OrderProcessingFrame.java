@@ -128,7 +128,6 @@ public class OrderProcessingFrame extends JFrame {
         }
     }
 
-    // Main method for testing
     public static void main(String[] args) {
         new OrderProcessingFrame(48.00,4); // Example total amount
     }

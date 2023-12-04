@@ -40,7 +40,6 @@ public class ProductManagementFrame {
         tableModel.addColumn("Category ID");
         tableModel.addColumn("Expiration Date");
 
-        // Create the product table
         productTable = new JTable(tableModel) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -65,7 +64,6 @@ public class ProductManagementFrame {
         buttonPanel.add(refreshButton);
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
-        // Add action listeners for buttons
         addButton.addActionListener(new ActionListener()
         {
             @Override
