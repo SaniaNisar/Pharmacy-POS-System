@@ -178,11 +178,23 @@ public class OrderDao {
         for (OrderDetail detail : order.getOrderDetails()) {
             detail.setOrderId(order.getOrderId());
             saveOrderDetail(detail);
+        }
+    }
+   /* public void saveOrder(Order order) throws SQLException {
+        // Create the order and get its generated ID
+        createOrder(order);
+
+        // For each order detail, save it using the generated order ID
+        for (OrderDetail detail : order.getOrderDetails()) {
+            detail.setOrderId(order.getOrderId());
+            saveOrderDetail(detail);
 
             // Decrement inventory if needed
             CartController cartController = new CartController(new CartService(new CartDao(databaseConnection)));
             cartController.decrementInventory(detail.getProductId(), detail.getQuantity());
         }
     }
+
+    */
 
 }

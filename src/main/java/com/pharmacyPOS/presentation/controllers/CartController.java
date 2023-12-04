@@ -1,12 +1,14 @@
 package com.pharmacyPOS.presentation.controllers;
 
 import com.pharmacyPOS.data.dao.InventoryDao;
+import com.pharmacyPOS.data.dao.ProductDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.CartItem;
 import com.pharmacyPOS.data.entities.Inventory;
 import com.pharmacyPOS.service.CartService;
 import com.pharmacyPOS.data.entities.Cart;
 import com.pharmacyPOS.data.entities.SaleItem;
+import com.pharmacyPOS.service.ProductService;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -14,6 +16,16 @@ import java.util.List;
 public class CartController {
 
     private CartService cartService;
+    private ProductService productService; // Assuming you have a ProductService
+
+    // Constructor
+    public CartController(CartService cartService, ProductService productService) {
+        this.cartService = cartService;
+        DatabaseConnection connection = new DatabaseConnection();
+        connection.connect();
+        this.productService = new ProductService(new ProductDao(connection));
+    }
+
 
     public CartController(CartService cartService) {
         this.cartService = cartService;
@@ -98,4 +110,5 @@ public class CartController {
     public void clearCart(int cartId) {
        cartService.clearCart(cartId);
     }
+
 }

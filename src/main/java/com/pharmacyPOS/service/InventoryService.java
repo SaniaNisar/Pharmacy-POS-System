@@ -7,6 +7,7 @@ import com.pharmacyPOS.data.entities.InventoryReport;
 import com.pharmacyPOS.data.entities.Product;
 import com.pharmacyPOS.data.database.DatabaseConnection;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,8 +101,26 @@ public class InventoryService {
         return (inventoryDao.getProductNameById(productId));
     }
 
-
+    public void replenishInventory()
+    {
+        inventoryDao.replenishInventory();
+    }
     public void updateInventoryItemWithProductInfo(Inventory inventory, Product product) {
         inventoryDao.updateInventoryItemWithProductInfo(inventory,product);
     }
+
+    public int getQuantityByProductId(int productId) {
+        try {
+            // Call the inventoryService to retrieve the quantity by product ID
+            return inventoryDao.getQuantityByProductId(productId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public void decrementQuantityByProductId(int productId) throws SQLException {
+        inventoryDao.decrementQuantityByProductId(productId);
+    }
+
 }

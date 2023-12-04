@@ -37,7 +37,13 @@ public class ProductManagementFrame {
         tableModel.addColumn("Expiration Date");
 
         // Create the product table
-        productTable = new JTable(tableModel);
+        productTable = new JTable(tableModel) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
+        };
+        productTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scrollPane = new JScrollPane(productTable);
         frame.add(scrollPane, BorderLayout.CENTER);
 
@@ -73,8 +79,6 @@ public class ProductManagementFrame {
         {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Handle the delete button action here
-                // You can delete the selected product from the table and the database
                 int selectedRow = productTable.getSelectedRow();
                 if (selectedRow >= 0) {
                     int productId = (int) productTable.getValueAt(selectedRow, 0);

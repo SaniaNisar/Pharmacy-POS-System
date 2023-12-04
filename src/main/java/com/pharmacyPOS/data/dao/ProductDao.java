@@ -111,6 +111,7 @@ public class ProductDao {
 
             int affectedRows = pstmt.executeUpdate();
 
+            System.out.println("CREATED PRODUCT WITH NAME : "+ product.getName());
             if (affectedRows > 0) {
                 try (ResultSet rs = pstmt.getGeneratedKeys()) {
                     if (rs.next()) {

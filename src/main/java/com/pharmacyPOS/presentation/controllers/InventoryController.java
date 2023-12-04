@@ -5,6 +5,8 @@ import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.Inventory;
 import com.pharmacyPOS.data.entities.Product;
 import com.pharmacyPOS.service.InventoryService;
+
+import java.sql.SQLException;
 import java.util.List;
 
 public class InventoryController {
@@ -65,6 +67,11 @@ public class InventoryController {
         inventoryService.updateInventoryItemWithProductInfo(inventory,product);
     }
 
+    public void replenishInventory()
+    {
+        inventoryService.replenishInventory();
+    }
+
     public boolean updateInventoryItem(Inventory inventory) {
         try {
             inventoryDao.updateInventoryItem(inventory);
@@ -115,5 +122,37 @@ public class InventoryController {
 
     public Inventory getInventoryByProductId(int productId) {
         return inventoryService.getInventoryByProductId(productId);
+    }
+
+    public int getQuantityByProductId(int productId) {
+        // Call the inventoryService to retrieve the quantity by product ID
+        return inventoryService.getQuantityByProductId(productId);
+    }
+
+    public void decrementQuantityByProductId(int productId) throws SQLException {
+        inventoryService.decrementQuantityByProductId(productId);
+    }
+
+    public void incrementInventory(int productId, int amount) {
+        try {
+            // Get the current inventory quantity
+            int currentQuantity = inventoryDao.getQuantityByProductId(productId);
+            if (currentQuantity >= 0) {
+                // Calculate the new quantity after incrementing
+                int newQuantity = currentQuantity + amount;
+                // Update the inventory with the new quantity
+                inventoryDao.updateInventoryQuantity(productId, newQuantity);
+            } else {
+                // Handle the case where the product is not found in the inventory
+                System.out.println("Product not found in inventory.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateInventoryQuantity(int productId, int newQuantity)
+    {
+        inventoryDao.updateInventoryQuantity(productId,newQuantity);
     }
 }

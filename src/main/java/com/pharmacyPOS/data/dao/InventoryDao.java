@@ -150,6 +150,20 @@ public class InventoryDao {
         return null;
     }
 
+    public void replenishInventory() {
+        String sql = "DELETE FROM inventory WHERE quantity = 0";
+
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            int rowsDeleted = pstmt.executeUpdate();
+            System.out.println(rowsDeleted + " rows deleted from inventory where quantity = 0");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void updateInventoryItemWithProductInfo(Inventory inventory, Product product) {
         String updateInventorySql = "UPDATE inventory SET expiry_date = ?, quantity = ?, low_stock_threshold = ? WHERE inventory_id = ?";
         String updateProductSql = "UPDATE products SET name = ?, expiration_date = ? WHERE product_id = ?";
@@ -179,6 +193,44 @@ public class InventoryDao {
             e.printStackTrace();
         }
     }
+
+    public int getQuantityByProductId(int productId) throws SQLException {
+        String sql = "SELECT quantity FROM inventory WHERE product_id = ?";
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, productId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("quantity");
+                }
+            }
+        }
+        return -1; // Return a negative value if the product is not found or an error occurs
+    }
+
+    public void decrementQuantityByProductId(int productId) throws SQLException {
+        String sql = "UPDATE inventory SET quantity = quantity - 1 WHERE product_id = ?";
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, productId);
+            pstmt.executeUpdate();
+        }
+    }
+
+    public void updateInventoryQuantity(int productId, int newQuantity) {
+        String sql = "UPDATE inventory SET quantity = ? WHERE product_id = ?";
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, newQuantity);
+            pstmt.setInt(2, productId);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
 

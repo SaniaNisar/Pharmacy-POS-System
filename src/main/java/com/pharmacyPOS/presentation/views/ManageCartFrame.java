@@ -9,19 +9,20 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import com.pharmacyPOS.data.dao.CartDao;
+import com.pharmacyPOS.data.dao.InventoryDao;
 import com.pharmacyPOS.data.dao.OrderDao;
 import com.pharmacyPOS.data.database.DatabaseConnection;
 import com.pharmacyPOS.data.entities.*;
 import com.pharmacyPOS.presentation.controllers.CartController;
 import com.pharmacyPOS.presentation.controllers.InventoryController;
 import com.pharmacyPOS.service.CartService;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.pharmacyPOS.service.InventoryService;
 
 public class ManageCartFrame extends JFrame {
     private CartController cartController;
@@ -33,6 +34,7 @@ public class ManageCartFrame extends JFrame {
     private int currentOrderId;
     private OrderDao orderDao;
     private JLabel totalAmountLabel;
+    private InventoryController inventorycontroller; // Initialize this
 
     public ManageCartFrame(int userId) {
         this.userId = userId;
@@ -40,6 +42,7 @@ public class ManageCartFrame extends JFrame {
         c.connect();
         this.cartController = new CartController(new CartService(new CartDao(c)));
         this.orderDao = new OrderDao(c);
+        this.inventorycontroller = new InventoryController(new InventoryService(new InventoryDao(c)));
 
         totalAmountLabel = new JLabel("Total: $0.00");
         totalAmountLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -76,12 +79,16 @@ public class ManageCartFrame extends JFrame {
         processOrderButton = new JButton("Process Order");
         processOrderButton.addActionListener(this::onProcessOrderClicked);
         clearButton = new JButton("Clear Cart");
-        clearButton.addActionListener(this::onclearButtonClicked);
+        clearButton.addActionListener(this::onClearButtonClicked);
+
+        JButton refreshButton = new JButton("Refresh Cart");
+        refreshButton.addActionListener(this::onRefreshButtonClicked);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         buttonPanel.add(processOrderButton);
         buttonPanel.add(clearButton);
+        buttonPanel.add(refreshButton);
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
@@ -92,29 +99,45 @@ public class ManageCartFrame extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
-
-    private void onclearButtonClicked(ActionEvent actionEvent) {
+    private void onClearButtonClicked(ActionEvent actionEvent) {
         try {
+            // Get the current cart
             Cart currentCart = cartController.getCurrentCart(userId);
-            cartController.clearCart(currentCart.getCartId());
+            int cartId = currentCart.getCartId(); // Get the current cart ID
+
+            // Retrieve cart items
+            List<CartItem> cartItems = cartController.getCartItems(userId);
+
+            for (CartItem cartItem : cartItems) {
+                int productId = cartItem.getProductId();
+                int currentQuantity = cartItem.getQuantity();
+
+                // Increment the quantity in the inventory by the quantity in the cart
+                Inventory inventory = inventorycontroller.getInventoryByProductId(productId);
+                if (inventory != null) {
+                    int newQuantity = inventory.getQuantity() + currentQuantity;
+                    inventorycontroller.updateInventoryQuantity(productId, newQuantity);
+                }
+            }
+
+            // Clear the cart
+            cartController.clearCart(cartId);
+
+            // Disable the clear button
+            clearButton.setEnabled(false);
+
             loadCartItems();
-        }
-        catch (SQLException e) {
-            e.printStackTrace();;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         refreshTotalAmount();
     }
 
-
-    private void refreshTotalAmount()
-    {
-        try
-        {
+    private void refreshTotalAmount() {
+        try {
             double total = cartController.getCartTotal(userId);
             totalAmountLabel.setText("Total: $" + String.format("%.2f", total));
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             ex.printStackTrace();
             totalAmountLabel.setText("Error calculating total");
         }
@@ -166,22 +189,6 @@ public class ManageCartFrame extends JFrame {
             return label;
         }
 
-        /*public void actionPerformed(ActionEvent e) {
-            SwingUtilities.invokeLater(() -> {
-                try {
-                    int productId = (int) cartTableModel.getValueAt(editedRow, 0);
-                    int cartId = getCurrentCartId();
-                    removeItemFromCart(productId);
-                    cartTableModel.removeRow(editedRow);
-                    refreshTotalAmount();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-            fireEditingStopped();
-        }
-         */
-
         public void actionPerformed(ActionEvent e) {
             SwingUtilities.invokeLater(() -> {
                 try {
@@ -193,10 +200,19 @@ public class ManageCartFrame extends JFrame {
                         // Decrement quantity by 1 in the table model and database
                         cartTableModel.setValueAt(currentQuantity - 1, editedRow, 2);
                         cartController.updateCartItemQuantity(cartId, productId, currentQuantity - 1);
+
+                        // Increment the inventory quantity by 1
+                        DatabaseConnection connection = new DatabaseConnection();
+                        connection.connect();
+                        InventoryController inventoryController = new InventoryController(new InventoryService(new InventoryDao(connection)));
+                        inventoryController.incrementInventory(productId, 1); // Assuming you have a method for incrementing inventory
                     } else {
                         // Remove item from cart and table model
                         cartController.removeItemFromCart(cartId, productId);
                         cartTableModel.removeRow(editedRow);
+
+                        // Increment the inventory quantity by the full quantity of the item
+                        inventorycontroller.incrementInventory(productId, currentQuantity); // Assuming you have a method for incrementing inventory
                     }
                     refreshTotalAmount();
 
@@ -209,7 +225,6 @@ public class ManageCartFrame extends JFrame {
             fireEditingStopped();
         }
 
-
         private int getCurrentCartId() {
             Cart cart = null;
             try {
@@ -221,7 +236,6 @@ public class ManageCartFrame extends JFrame {
         }
     }
 
-
     private int findRowByProductId(int productId) {
         for (int row = 0; row < cartTableModel.getRowCount(); row++) {
             if ((int) cartTableModel.getValueAt(row, 0) == productId) {
@@ -231,34 +245,6 @@ public class ManageCartFrame extends JFrame {
         return -1; // Return -1 if not found
     }
 
-    /*private void loadCartItems() {
-        cartTableModel.setRowCount(0); // Clear existing rows
-        try {
-            List<CartItem> cartItems = cartController.getCartItems(userId);
-            for (CartItem item : cartItems) {
-                int row = findRowByProductId(item.getProductId());
-                if (row != -1) {
-                    // Update quantity in the existing row
-                    int existingQuantity = (int) cartTableModel.getValueAt(row, 2);
-                    cartTableModel.setValueAt(existingQuantity + item.getQuantity(), row, 2);
-                } else {
-                    // Add new row for the product
-                    cartTableModel.addRow(new Object[]{
-                            item.getProductId(),
-                            item.getProductName(),
-                            item.getQuantity(),
-                            item.getPrice(),
-                            "Remove"
-                    });
-                }
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error loading cart items", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        refreshTotalAmount();
-    }
-     */
     private void loadCartItems() {
         try {
             List<CartItem> cartItems = cartController.getCartItems(userId);
@@ -287,153 +273,6 @@ public class ManageCartFrame extends JFrame {
         refreshTotalAmount();
     }
 
-    private void refreshCartDisplay() {
-        // Implement logic to reload cart items and refresh the total amount
-        loadCartItems();
-        refreshTotalAmount();
-    }
-    // Main method for demonstration purposes
-    public static void main(String[] args) {
-        int userId = 2; // Example user ID
-        DatabaseConnection c = new DatabaseConnection();
-        c.connect();
-        CartController cartController = new CartController(new CartService(new CartDao(c))); // Initialize with actual cart controller
-        new ManageCartFrame(userId);
-    }
-
-    private void cancellationOrder(JFrame paymentFrame) {
-        int confirm = JOptionPane.showConfirmDialog(
-                paymentFrame,
-                "Are you sure you want to cancel this order?",
-                "Cancel Order",
-                JOptionPane.YES_NO_OPTION
-        );
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            try {
-//                orderDao.deleteOrder(orderId);
-                JOptionPane.showMessageDialog(paymentFrame, "Order cancelled successfully.", "Order Cancelled", JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(paymentFrame, "Failed to cancel order", "Error", JOptionPane.ERROR_MESSAGE);
-            } finally {
-                paymentFrame.dispose();
-            }
-        }
-    }
-
-    private double calculateTotalAmount() {
-        double total = 0.0;
-        try {
-             total = cartController.getCartTotal(userId);
-//            // Now you can use this total to display in the UI
-//            JOptionPane.showMessageDialog(this, "Total Cart Amount: " + total, "Cart Total", JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error calculating cart total", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        return total;
-    }
-
-    private void onPayClicked(double totalAmount, String amountPaidStr, JFrame paymentFrame) throws SQLException {
-        try {
-            double amountPaid = Double.parseDouble(amountPaidStr);
-            if (amountPaid >= totalAmount) {
-                try {
-                    Cart currentCart = cartController.getCurrentCart(userId);
-                    List<OrderDetail> orderDetailsList = createOrderDetailsFromCart(currentCart);
-
-                    // Convert List to Array
-                    OrderDetail[] orderDetailsArray = new OrderDetail[orderDetailsList.size()];
-                    orderDetailsArray = orderDetailsList.toArray(orderDetailsArray);
-
-                    // Create Order object
-                    Order order = new Order();
-                    order.setUserId(userId);
-                    order.setTimestamp(new Date());
-                    order.setOrderDetails(orderDetailsArray);
-
-                    // Save Order in the database (implement saveOrder in OrderDao)
-                    orderDao.saveOrder(order);
-
-                    JOptionPane.showMessageDialog(paymentFrame, "Payment successful! Change: " + (amountPaid - totalAmount), "Payment", JOptionPane.INFORMATION_MESSAGE);
-                    // invoice generation logic willl be added here
-                    //new POSReceipt(order,totalAmount, amountPaid);
-                    //JOptionPane.showMessageDialog(this, "Invoice generated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    paymentFrame.dispose(); // Close the payment frame
-
-                    // Clear the cart
-                    cartController.clearCart(currentCart.getCartId());
-
-                    // Update inventory
-//                    updateInventory(orderDetailsList);
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Failed to generate invoice", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }else {
-                JOptionPane.showMessageDialog(paymentFrame, "Insufficient amount paid.", "Payment Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(paymentFrame, "Invalid amount entered.", "Payment Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private InventoryController inventorycontroller; // Make sure this is initialized
-
-    /**
-     * Updates the inventory based on the order details.
-     * @param orderDetailsList A list of OrderDetail objects representing the items ordered.
-     */
-    private void updateInventory(List<OrderDetail> orderDetailsList) throws SQLException {
-        for (OrderDetail orderDetail : orderDetailsList) {
-            int productId = orderDetail.getProductId();
-            int orderedQuantity = orderDetail.getQuantity();
-
-            // Retrieve the current inventory for this product
-            Inventory inventory = inventorycontroller.getInventoryByProductId(productId);
-            if (inventory != null) {
-                // Check if enough inventory is available
-                if (inventory.getQuantity() >= orderedQuantity) {
-                    // Decrease the inventory quantity
-                    int newQuantity = inventory.getQuantity() - orderedQuantity;
-                    inventory.setQuantity(newQuantity);
-                    inventorycontroller.updateInventoryItem(inventory);
-                } else {
-                    // Handle insufficient inventory
-                    throw new SQLException("Insufficient inventory for product ID: " + productId);
-                }
-            } else {
-                // Handle case where inventory item doesn't exist
-                throw new SQLException("Inventory item not found for product ID: " + productId);
-            }
-        }
-    }
-
-    private List<OrderDetail> createOrderDetailsFromCart(Cart cart) {
-        List<OrderDetail> orderDetails = new ArrayList<>();
-        for (SaleItem item : cart.getItems()) {
-            OrderDetail detail = new OrderDetail(currentOrderId, item.getProductId(), item.getQuantity(), item.getPrice());
-            orderDetails.add(detail);
-        }
-        return orderDetails;
-    }
-
-    private Order createOrderFromCart() throws SQLException {
-        Cart currentCart = cartController.getCurrentCart(userId);
-        List<OrderDetail> orderDetails = new ArrayList<>();
-
-        for (SaleItem item : currentCart.getItems()) {
-            OrderDetail detail = new OrderDetail(0, 0, item.getProductId(), item.getQuantity(), item.getPrice());
-            orderDetails.add(detail);
-        }
-
-        Order order = new Order(0, userId, new Timestamp(System.currentTimeMillis()));
-        order.setOrderDetails(orderDetails.toArray(new OrderDetail[0]));
-        return order;
-    }
-
     private void onProcessOrderClicked(ActionEvent actionEvent) {
         try {
             Cart currentCart = cartController.getCurrentCart(userId);
@@ -443,14 +282,15 @@ public class ManageCartFrame extends JFrame {
                 if (confirm == JOptionPane.YES_OPTION) {
                     Order processedOrder = processOrder(currentCart); // Process the order and get the order object
                     int orderId = processedOrder.getOrderId(); // Retrieve the orderId from the order object
-                    new OrderProcessingFrame(totalAmount, orderId); // Pass the totalAmount and orderId to the OrderProcessingFrame
+                    new OrderProcessingFrame(totalAmount, orderId);
+                    dispose();
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Cart is empty.", "No items to process", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error processing order", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error processing order: Insufficient Quantity", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -464,7 +304,7 @@ public class ManageCartFrame extends JFrame {
         Order order = new Order(0, userId, new Timestamp(System.currentTimeMillis()));
         order.setOrderDetails(orderDetails.toArray(new OrderDetail[0]));
 
-        orderDao.saveOrder(order); // Assuming saveOrder method returns the saved Order object with orderId
+        orderDao.saveOrder(order); // Save the order without decrementing inventory
 
         cartController.clearCart(cart.getCartId());
 
@@ -472,32 +312,18 @@ public class ManageCartFrame extends JFrame {
         return order; // Return the processed order object
     }
 
-// ... [rest of the ManageCartFrame class remains unchanged] ...
+    private void onRefreshButtonClicked(ActionEvent actionEvent) {
+        // Call the loadCartItems method to refresh the cart
+        loadCartItems();
+    }
 
-
-    private void removeItemFromCart(int productId) {
-        try {
-            Cart currentCart = cartController.getCurrentCart(userId);
-            int cartId = currentCart.getCartId();
-            int row = findRowByProductId(productId);
-            int currentQuantity = (int) cartTableModel.getValueAt(row, 2);
-
-            if (currentQuantity > 1) {
-                cartTableModel.setValueAt(currentQuantity - 1, row, 2);
-                cartController.updateCartItemQuantity(cartId, productId, currentQuantity - 1);
-            } else {
-                cartTableModel.removeRow(row);
-                cartController.removeItemFromCart(cartId, productId);
-            }
-
-            JOptionPane.showMessageDialog(this, "Item updated successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error updating item in cart", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-        refreshTotalAmount(); // Refresh the total amount display
+    // Main method for demonstration purposes
+    public static void main(String[] args) {
+        int userId = 2; // Example user ID
+        DatabaseConnection c = new DatabaseConnection();
+        c.connect();
+        CartController cartController = new CartController(new CartService(new CartDao(c))); // Initialize with actual cart controller
+        new ManageCartFrame(userId);
     }
 
 }
-
