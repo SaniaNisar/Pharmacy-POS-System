@@ -16,6 +16,7 @@ public class ManageCategoriesPage extends JFrame
     private CategoryController categoryController;
     private JTable categoriesTable;
     private DefaultTableModel tableModel;
+    private JButton updateCategory;
 
     public ManageCategoriesPage(DatabaseConnection conn)
     {
