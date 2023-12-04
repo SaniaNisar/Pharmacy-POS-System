@@ -123,4 +123,9 @@ public class InventoryService {
         inventoryDao.decrementQuantityByProductId(productId);
     }
 
+    public int getCurrentInventoryQuantity(int productId)
+    {
+        return (inventoryDao.getCurrentInventoryQuantity(productId));
+    }
+
 }

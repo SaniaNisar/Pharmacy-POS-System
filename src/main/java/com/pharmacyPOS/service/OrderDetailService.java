@@ -1,4 +1,4 @@
-package com.pharmacyPOS.services;
+package com.pharmacyPOS.service;
 
 import com.pharmacyPOS.data.dao.OrderDetailDao;
 import com.pharmacyPOS.data.entities.OrderDetail;
@@ -26,5 +26,10 @@ public class OrderDetailService {
     public List<OrderDetail> getAllOrderDetails() {
         // You can add additional logic or validation if needed
         return orderDetailDao.getAllOrderDetails();
+    }
+
+    public List<OrderDetail> getOrderDetails(int orderId)
+    {
+        return (orderDetailDao.getOrderDetails(orderId));
     }
 }

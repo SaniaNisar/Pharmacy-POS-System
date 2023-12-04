@@ -231,6 +231,28 @@ public class InventoryDao {
         }
     }
 
+    public int getCurrentInventoryQuantity(int productId) {
+        String sql = "SELECT quantity FROM inventory WHERE product_id = ?";
+        int currentQuantity = 0;
+
+        try (Connection conn = databaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, productId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    currentQuantity = rs.getInt("quantity");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return currentQuantity;
+    }
+
+
 
 }
 

@@ -155,4 +155,9 @@ public class InventoryController {
     {
         inventoryDao.updateInventoryQuantity(productId,newQuantity);
     }
+
+    public int getCurrentInventoryQuantity(int productId)
+    {
+        return (inventoryService.getCurrentInventoryQuantity(productId));
+    }
 }

@@ -1,7 +1,7 @@
 package com.pharmacyPOS.presentation.controllers;
 
 import com.pharmacyPOS.data.entities.OrderDetail;
-import com.pharmacyPOS.services.OrderDetailService;
+import com.pharmacyPOS.service.OrderDetailService;
 
 import java.util.List;
 
@@ -28,6 +28,11 @@ public class OrderDetailController {
     public List<OrderDetail> getAllOrderDetails() {
         return orderDetailService.getAllOrderDetails();
         // Add any additional logic or response handling if needed
+    }
+
+    public List<OrderDetail> getOrderDetails(int orderId)
+    {
+        return(orderDetailService.getOrderDetails(orderId));
     }
 
 }
