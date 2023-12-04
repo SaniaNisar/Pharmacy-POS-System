@@ -64,12 +64,10 @@ public class UpdateProductFrame extends JFrame {
                 // Call the updateProduct method to update the product in the database
                 productService.updateProduct(product);
 
-                // Close the update frame
                 dispose();
             }
         });
 
-        // Create a panel to organize the input fields and button
         JPanel inputPanel = new JPanel(new GridLayout(6, 2));
         inputPanel.add(new JLabel("Name:"));
         inputPanel.add(nameField);
