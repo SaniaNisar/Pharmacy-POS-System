@@ -149,8 +149,4 @@ public class AddProductFrame extends JFrame {
     public JTextField getQuantityTextField() {
         return quantityTextField;
     }
-
-    public JButton getAddButton() {
-        return addButton;
-    }
 }
